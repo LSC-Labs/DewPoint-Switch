@@ -1,0 +1,48 @@
+{
+  "name": "esp-projecttemplate",
+  "version": "1.0.0",
+  "description": "ESP Template for smart devices",
+  "main": "index.js",
+  "type": "module",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "homepage": "https://github.com/lsc-labs/ESP-ProjectTemplate#readme",
+  "bugs": {
+    "url": "https://github.com/lsc-labs/ESP-ProjectTemplate/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lsc-labs/ESP-ProjectTemplate.git"
+  },
+  "scripts": {
+    "compile-Pages": "gulp compilePages",
+    "build-Pages": "gulp buildPages",
+    "sync-Files": "gulp syncFiles",
+    "watch-css": "sass --watch --style expanded --source-map --embed-sources --no-error-css scss/:src/web/css/",
+    "css-compile": "sass       --style expanded --source-map --embed-sources --no-error-css scss/:src/web/css/",
+    "js-join": "python3 scripts/joinFiles.py --sourceDir web/js --fileMask '*.js' --targetFile src/web/js/_joined.js",
+    "watch-js-join": "watchlist web/js -- npm run js-join",
+    "git-updSub": "git submodule update --remote --merge"
+  },
+  "author": "LSC Labs - P.Liebl",
+  "license": "MIT",
+  "devDependencies": {
+    "bootstrap": "^5.3.5",
+    "bootstrap-icons": "^1.11.3",
+    "footable": "^2.0.6",
+    "gulp": "^5.0.1",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-debug": "^5.0.1",
+    "gulp-flatmap": "^1.0.2",
+    "gulp-gzip": "^1.4.2",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-jsonmin": "^1.2.0",
+    "gulp-uglify": "^3.0.2",
+    "jquery": "^3.7.1",
+    "pump": "^3.0.3",
+    "sass": "^1.89.2",
+    "watchlist": "^0.3.1"
+  }
+}
