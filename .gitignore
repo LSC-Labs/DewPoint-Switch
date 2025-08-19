@@ -9,3 +9,4 @@ node_modules
 bin
 test
 src/web/dev
+dist/tmp

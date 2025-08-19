@@ -1,3 +1,4 @@
 [submodule "lib/PLibESPV1"]
 	path = lib/PLibESPV1
 	url = http://github.com/LSC-Labs/PLibESPV1
+	branch = main

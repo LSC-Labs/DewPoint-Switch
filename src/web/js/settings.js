@@ -1,7 +1,7 @@
 
 const APP_SETTINGS = {
     "@Default": "P.Liebl",
-    "DefaultPage" : "Support",              // Page to be loaded on initialization
+    "DefaultPage" : "Status",              // Page to be loaded on initialization
 
     /**
      * "app":
@@ -11,18 +11,18 @@ const APP_SETTINGS = {
      * Use them in this files as $(<name>)
      */
     "app": {
-        "prog_name": "ESP Project Template",
+        "prog_name": "Dew Point Monitor",
         "prog_ver": "0.1",
         "prog_copy": "(c) 2025 LSC-Labs",
         "logLevel": 5,
-        "mqtt": {
+        "ws": {
             "recon": false,
         },
         "latest": {
-            "url": "https://api.github.com/repos/LSC-Labs/ESP-ProjectTemplate/releases/latest"
+            "url": "https://api.github.com/repos/LSC-Labs/DewPoint-Monitor/releases/latest"
         },
-        "homePage": "https://github.com/LSC-Labs/ESP-ProjetTemplate",
-        "deployPage": "//lsc-labs.de/Software/ESP-ProjectTemplate/Publish",
+        "homePage": "https://github.com/LSC-Labs/DewPoint-Monitor",
+        "deployPage": "//lsc-labs.de/Software/DewPoint-Monitor/Publish",
         "mailto":"office@lsc-labs.de?subject=$(prog_name) - v$(prog_ver)"
         
     },
@@ -157,6 +157,10 @@ const APP_SETTINGS = {
      * 
      */
     "menu":        [
+        { 
+            "name": "Info",
+            "icon": "Info"
+        },
         { 
             "name": "Status",
             "icon": "Status"

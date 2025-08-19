@@ -98,6 +98,7 @@ function syncFile(strSourceFile, strTargetFile, strDirection) {
                         fs.copyFileSync(strSourceFile, strTargetFile);
                         Status.numSyncFiles++;
                     } else {
+                        console.log(`.   - using source : ${strSourceFile}`);
                         console.log(bSourceExists ? 
                                     `   (>) target file is up to date...  - no action` :
                                     "   (>) source file does not exist... - no action");

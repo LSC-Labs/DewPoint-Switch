@@ -8,7 +8,7 @@
 #include <ProgVersion.h>
 #include <Msgs.h>
 #define APP_AUTHOR      "P. Liebl"
-#define APP_DESCRIPTION "ESP-ProjectTemplate."
+#define APP_DESCRIPTION "Dew Point Monitor."
 #define APP_COPYRIGHT   "2025" 
 
 #include <ConfigHandler.h>
@@ -38,17 +38,4 @@
 #define SENSOR_OUTDOOR      2
 #define USE_OPEN_WEATHER   99
 
-struct AppConfig {
-    float minActivationLevelIntern =  10.0; // Min internal temp to activate
-    float minActivationLevelExtern = -10.0; // Min external temp to activate
-    float dewPointActivationDelta  =   5.0; // Dewpoint activation Delta between intern/extern
-    float activationHysteresis     =   1.0; // Hysteresis / Switch threshold temp
-};
-
-struct AppStatus {
-    bool ActiveVentilation = false; // Ventilation is needed and activ
-    bool isInErrorState    = false; // If a sensor is in error, the flag is true.
-    String internalErrorMsg = "";
-    String externalErrorMsg = "";
-};
 
