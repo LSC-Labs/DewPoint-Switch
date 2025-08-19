@@ -1,7 +1,7 @@
 
 const APP_SETTINGS = {
     "@Default": "P.Liebl",
-    "DefaultPage" : "Status",              // Page to be loaded on initialization
+    "DefaultPage" : "Info",              // Page to be loaded on initialization
 
     /**
      * "app":

@@ -9,4 +9,5 @@ node_modules
 bin
 test
 src/web/dev
+src/web/test*
 dist/tmp

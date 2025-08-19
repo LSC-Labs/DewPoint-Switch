@@ -1,0 +1,59 @@
+{
+    "DewPoint": {
+        "legend": "Dew Point Thresholds",
+        "title" : "Set the dew point sensor thresholds",
+        "hysteresis": "Hysteresis",
+        "hyst": {
+            "label": "Hysteresis",
+            "info" : "Hysteresis of the Dew Point"
+        },
+        "delta": {
+            "label" : "Delta",
+            "info"  : "Delta, before fan gets activated"
+        },
+        "min" :{
+            "intern" : {
+                "label" : "Min intern",
+                "info" : "Threshold for intern mimimum"
+            },
+             "extern" : {
+                "label" : "Min extern",
+                "info" : "Threshold for extern mimimum"
+            }
+        }
+    },
+    "DewSensors": {
+        "legend": "Dew Point Sensors",
+        "title" : "Set and adjust the dew point sensors",
+        "adjust_t": {
+            "label": "Adjust temp",
+            "info" : "Adjust the temperature"
+        },
+        "adjust_h": {
+            "label": "Adjust humidity",
+            "info" : "Adjust the humidity"
+        },
+        "sensorType": {
+            "label":"Sensor type",
+            "info" :"Select the sensor type you want to use."
+        },
+        "open": {
+            "name": "Open weather map",
+            "appID" : { 
+                "label" : "App ID",
+                "info" : "An open weather app id is needed, register and enter here..."
+            },
+            "long" : {
+                "label" : "Longitude",
+                "info" : "Longitude of your location."
+            },
+            "lat" : {
+                "label": "Latitude",
+                "info" : "Latitude of your location"
+            }
+        },
+        "intern": {
+            
+        }
+    }
+}

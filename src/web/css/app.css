@@ -1,0 +1,37 @@
+
+/**************/
+
+.thermo {
+  height: 130px;
+  width: 3rem;
+  display: inline-block;
+  
+  .thermo-label {
+    position: relative;
+    text-align: center;
+  }
+}
+.thermo-glas {
+    display:block;
+    margin: auto;
+    max-height: 100px;
+    height: 100px;
+    width: 1.3rem;
+    border: 1px solid #d2d2d2;
+    border-radius: 10px;
+    padding: 2px;
+    rotate: 180deg;
+    .thermo-liquid {
+      background-color: rgb(255, 179, 0);
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      position: relative;
+    }
+    .thermo-temp {
+          background-color: rgb(233, 82, 48);
+        }
+    .thermo-humidity {
+        background-color: rgb(92, 87, 232);
+      }    
+  }
+
