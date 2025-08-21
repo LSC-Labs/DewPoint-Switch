@@ -1,7 +1,7 @@
 #pragma once
 // -------------------------------------------------------------------
 // LSC-Labs auto generated file : app.css.gz.h
-// Wed Aug 20 2025 17:41:09 GMT+0200 (Central European Summer Time)
+// Thu Aug 21 2025 19:01:24 GMT+0200 (Central European Summer Time)
 // -------------------------------------------------------------------
 // do not touch - changes will be overwritten...
 // -------------------------------------------------------------------

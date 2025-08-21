@@ -33,6 +33,8 @@
 
 #define MSG_SENSOR_STATUS       (MSG_USER_BASE + 20)
 #define MSG_OPEN_WEATHER_DATA   (MSG_USER_BASE + 10)
+#define MSG_FAN_ACTIVATE        (MSG_USER_BASE + 100)
+#define MSG_FAN_DISABLE         (MSG_USER_BASE + 101)
 
 #define SENSOR_INDOOR       1
 #define SENSOR_OUTDOOR      2
