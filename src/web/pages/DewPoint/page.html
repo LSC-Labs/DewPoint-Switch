@@ -1,0 +1,173 @@
+<!--
+    Dew Point Page
+-->
+<div id="DewPointPage" data-menu='{"name":"Settings|DewPoint","title":"Dew Point", "icon":"Status"}'>
+    <legend data-i18n="DewPoint.legend"></legend>
+    <div class="pageDesc" data-i18n="DewPoint.title"></div>
+    <!-- Hysteresis setting -->
+    <div class="row form-group" data-auth="RO">
+        <label class="$(col-label-class) info-icon" data-i18n="@title:DewPoint.hyst.info">
+            <span data-i18n="DewPoint.hyst.label"></span>
+            <icon data-icon="Info"></icon>
+        </label>
+        <span class="$(col-input-class)">
+            <input data-cfg="hysteresis" class="form-control input-sm" type="text" 
+                pattern="^[+\-]?\d{1,2}[\.,]\d{1}$" value="0">
+        </span>
+    </div>
+    <!-- Activation delta setting -->
+    <div class="row form-group" data-auth="RO">
+        <label class="$(col-label-class) info-icon" data-i18n="@title:DewPoint.delta.info">
+            <span data-i18n="DewPoint.delta.label"></span>
+            <icon data-icon="Info"></icon>
+        </label>
+        <span class="$(col-input-class)">
+            <input data-cfg="dewdelta" class="form-control input-sm" type="text" 
+                pattern="^[+\-]?\d{1,2}[\.,]\d{1}$" value="0">
+        </span>
+    </div>
+
+    <!-- Activation delta setting -->
+    <div class="row form-group" data-auth="RO">
+        <label class="$(col-label-class) info-icon" data-i18n="@title:DewPoint.min.intern.info">
+            <span data-i18n="DewPoint.min.intern.label"></span>
+            <icon data-icon="Info"></icon>
+        </label>
+        <span class="$(col-input-class)">
+            <input data-cfg="minIntern" class="form-control input-sm" type="text" 
+                pattern="^[+\-]?\d{1,2}[\.,]\d{1}$">
+        </span>
+    </div>
+
+    <!-- Activation delta setting -->
+    <div class="row form-group" data-auth="RO">
+        <label class="$(col-label-class) info-icon" data-i18n="@title:DewPoint.min.extern.info">
+            <span data-i18n="DewPoint.min.extern.label"></span>
+            <icon data-icon="Info"></icon>
+        </label>
+        <span class="$(col-input-class)">
+            <input data-cfg="minExtern" class="form-control input-sm" type="text" 
+                pattern="^[+\-]?\d{1,2}[\.,]\d{1}$">
+        </span>
+    </div>
+
+    <div class="row form-group" data-element-type="save-btn-row"></div>
+</div>
+
+
+<div id="SensorsPage" data-menu='{"name":"Settings|Sensors","title":"Dew Point Sensors", "icon":"Status"}'>
+    <legend data-i18n="DewSensors.legend"></legend>
+    <div class="pageDesc" data-i18n="DewSensors.title"></div>
+
+    
+    <div class="groupPanel">
+        <div class="groupTitle">Sensor intern</div>
+        <div class="row form-group" data-auth="RO">
+            <label class="$(col-label-class) info-icon" data-i18n="@title:DewSensors.adjust_t.info">
+                <span data-i18n="DewSensors.adjust_t.label"></span>
+                <icon data-icon="Info"></icon>
+            </label>
+            <span class="$(col-input-class)">
+                <input data-cfg="s1.adjust_t" class="form-control input-sm" type="text" 
+                    pattern="^[+\-]?\d{1,2}[\.,]\d{1}$" value="0">
+            </span>
+        </div>
+        <div class="row form-group" data-auth="RO">
+            <label class="$(col-label-class) info-icon" data-i18n="@title:DewSensors.adjust_h.info">
+                <span data-i18n="DewSensors.adjust_h.label"></span>
+                <icon data-icon="Info"></icon>
+            </label>
+            <span class="$(col-input-class)">
+                <input data-cfg="s1.adjust_h" class="form-control input-sm" type="text" 
+                    pattern="^[+\-]?\d{1,2}[\.,]\d{1}$" value="0">
+            </span>
+        </div>
+    </div>
+
+    <div class="groupPanel">
+        <div class="groupTitle">Sensor extern</div>
+        <div class="row form-group" data-auth="RO">
+            <label class="$(col-label-class) info-icon" data-i18n="@title:DewSensors.adjust_t.info">
+                <span data-i18n="DewSensors.adjust_t.label"></span>
+                <icon data-icon="Info"></icon>
+            </label>
+            <span class="$(col-input-class)">
+                <input data-cfg="s2.adjust_t" class="form-control input-sm" type="text" 
+                    pattern="^[+\-]?\d{1,2}[\.,]\d{1}$" value="0">
+            </span>
+        </div>
+        <div class="row form-group" data-auth="RO">
+            <label class="$(col-label-class) info-icon" data-i18n="@title:DewSensors.adjust_h.info">
+                <span data-i18n="DewSensors.adjust_h.label"></span>
+                <icon data-icon="Info"></icon>
+            </label>
+            <span class="$(col-input-class)">
+                <input data-cfg="s2.adjust_h" class="form-control input-sm" type="text" 
+                    pattern="^[+\-]?\d{1,2}[\.,]\d{1}$" value="0">
+            </span>
+        </div>
+         <!-- Set the type of Sensor we are using -->
+        <div class="row form-group" data-auth="RO">
+            <label class="$(col-label-class) info-icon" data-i18n="@title:DewSensors.sensorType.info">
+                <span data-i18n="DewSensors.sensorType.label"></span>
+                <icon data-icon="Info"></icon>
+            </label>
+            <div class="$(col-input-class)" data-i18n="DewSensors.open.name">
+            </div>
+            <!--
+            <div class="$(col-input-class)">
+                <select id="intern_type" class="form-control input-sm">
+                    <option value="99">Open weather (Internet)</option>
+                    <option value="11">DHT 11</option>
+                    <option value="12">DHT 12</option>
+                    <option value="21">DHT 21 / AM2301</option>
+                    <option value="22">DHT 22</option>
+                </select>
+            </div>
+            -->
+        </div>
+
+        <!-- Set the application ID  open weather url -->
+        <div class="row form-group" data-auth="RO">
+            <label class="$(col-label-class) info-icon" data-i18n="@title:DewSensors.open.appID.info">
+            <span data-i18n="DewSensors.open.appID.label"></span>
+                <icon data-icon="Info"></icon>
+            </label>
+            <span class="$(col-input-class)">
+                <input data-cfg="openAppID" class="form-control input-sm" type="text">
+            </span>
+        </div>
+
+        <!-- Set the longitude for  open weather -->
+        <div class="row form-group" data-auth="RO">
+            <label class="$(col-label-class) info-icon" data-i18n="@title:DewSensors.open.long.info">
+            <span data-i18n="DewSensors.open.long.label"></span>
+                <icon data-icon="Info"></icon>
+            </label>
+            <span class="$(col-input-class)">
+                <input data-cfg="openLong" class="form-control input-sm" type="text">
+            </span>
+        </div>
+
+         <!-- Set the latitude for  open weather -->
+        <div class="row form-group" data-auth="RO">
+            <label class="$(col-label-class) info-icon" data-i18n="@title:DewSensors.open.lat.info">
+            <span data-i18n="DewSensors.open.lat.label"></span>
+                <icon data-icon="Info"></icon>
+            </label>
+            <span class="$(col-input-class)">
+                <input data-cfg="openLat" class="form-control input-sm" type="text">
+            </span>
+        </div>
+
+
+    </div>
+
+
+
+   
+
+
+
+    <div class="row form-group" data-element-type="save-btn-row"></div>
+</div>

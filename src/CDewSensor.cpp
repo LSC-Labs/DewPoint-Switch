@@ -2,6 +2,8 @@
     #undef DEBUG_INFOS
 #endif
 
+#include <LSCUtils.h>
+
 // https://www.heise.de/select/make/2022/1/2135511212557842576
 // https://www.heise.de/select/make/2022/2/2204711461516715363
 // https://www.heise.de/select/make/2022/1/softlinks/x2yt?wt_mc=pred.red.make.make012022.022.softlink.softlink
@@ -10,6 +12,24 @@
 #include <DewSensor.h>
 #include <Network.h>
 #include <ESP8266HTTPClient.h>
+
+#define SENSOR_CFG_IS_SENSOR        F("sensor")
+#define SENSOR_CFG_ADJUST_TEMP      F("adjust_temp")
+#define SENSOR_CFG_ADJUST_HUMIDITY  F("adjust_humidity")
+#define SENSOR_CFG_OPENWEATHER_URL  F("web_url")
+#define SENSOR_CFG_OPENWEATHER_KEY  F("web_key")
+#define SENSOR_CFG_OPENWEATHER_LONG F("web_long")
+#define SENSOR_CFG_OPENWEATHER_LAT  F("web_lat")
+#define SENSOR_STATUS_TEMPC         F("tempc")
+#define SENSOR_STATUS_HUMIDITY      F("hum")
+#define SENSOR_STATUS_TEMPC_RAW     F("tempc_raw")
+#define SENSOR_STATUS_HUMIDITY_RAW  F("hum_raw")
+#define SENSOR_STATUS_DEWPOINT      F("dew_point")
+#define SENSOR_STATUS_LAST_UPD_MS   F("last_upd_ms")
+
+
+
+
 
 
 CDewSensor::CDewSensor() {};
@@ -27,9 +47,35 @@ void CDewSensor::setup(int nPin, int nSensorType, int nLocation) {
         this->pSensor =  new DHT(nPin,nSensorType);
         this->pSensor->begin();
     }
-    Status.SensorLocation = nLocation;
-    
+    Status.SensorLocation = nLocation;    
 };
+
+void CDewSensor::readConfigFrom(JsonObject & oCfg) {
+    LSC::setValue(&Config.bIsSensor,            oCfg[SENSOR_CFG_IS_SENSOR]);
+    LSC::setValue(&Config.adjustHumidity,       oCfg[SENSOR_CFG_ADJUST_HUMIDITY]);
+    LSC::setValue(&Config.adjustTempC,          oCfg[SENSOR_CFG_ADJUST_TEMP]);
+    LSC::setValue(Config.strWeatherAppID,       oCfg[SENSOR_CFG_OPENWEATHER_KEY]);
+    LSC::setValue(Config.strWeatherLongitude,   oCfg[SENSOR_CFG_OPENWEATHER_LONG]);
+    LSC::setValue(Config.strWeatherLatitude,    oCfg[SENSOR_CFG_OPENWEATHER_LAT]);
+}
+
+void CDewSensor::writeConfigTo(JsonObject & oCfg, bool bHideCritical) {
+    oCfg[SENSOR_CFG_IS_SENSOR]          = Config.bIsSensor;
+    oCfg[SENSOR_CFG_ADJUST_HUMIDITY]    = Config.adjustHumidity;
+    oCfg[SENSOR_CFG_ADJUST_TEMP]        = Config.adjustTempC;
+    oCfg[SENSOR_CFG_OPENWEATHER_KEY]    = Config.strWeatherAppID;
+    oCfg[SENSOR_CFG_OPENWEATHER_LONG]   = Config.strWeatherLongitude;
+    oCfg[SENSOR_CFG_OPENWEATHER_LAT]    = Config.strWeatherLatitude;
+}
+
+void CDewSensor::writeStatusTo(JsonObject & oStatus) {
+    oStatus[SENSOR_STATUS_TEMPC]        = Status.TempC;
+    oStatus[SENSOR_STATUS_TEMPC_RAW]    = Status.TempRaw;
+    oStatus[SENSOR_STATUS_HUMIDITY]     = Status.Humidity;
+    oStatus[SENSOR_STATUS_HUMIDITY_RAW] = Status.HumidityRaw;
+    oStatus[SENSOR_STATUS_DEWPOINT]     = Status.DewPoint;
+    oStatus[SENSOR_STATUS_LAST_UPD_MS]  = Status.LastCallMillis;
+}
 
 float CDewSensor::setTemperature(float fRawData) {
     if(!isnan(fRawData)) Status.TempC = fRawData + Config.adjustTempC;

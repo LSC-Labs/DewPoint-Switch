@@ -132,6 +132,18 @@ var oConfigData = {
         "logConsole": "false",
         "traceMode":  "false",
     },
+    "dewapp": {
+        "hystersis": 1.1,
+        "delta":     4.5,
+        "min_intern": 10,
+        "min_extern": -3,
+    },
+    "sensor1": {
+
+    },
+    "sensor2": {
+
+    },
     "onair": {
         "priority": "mic",
         "oncam": "wave",

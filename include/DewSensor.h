@@ -30,7 +30,7 @@ struct DewConfig {
 
 };
 
-class CDewSensor { //  : IConfigHandler, IStatusHandler {
+class CDewSensor : public IConfigHandler,public IStatusHandler { //  : IConfigHandler, IStatusHandler {
     protected:
         DewConfig Config;
         DewStatus Status;
@@ -46,6 +46,10 @@ class CDewSensor { //  : IConfigHandler, IStatusHandler {
         void dispatch();
         float setTemperature(float fRawTemp);
         float setHumidity(float fRawHumi);
+        void writeStatusTo(JsonObject & oObj) override;
+        void readConfigFrom(JsonObject & oCfg) override;
+        void writeConfigTo(JsonObject & oCfg, bool bHideCritical) override;
+
 
     protected:
         void updateFromWeatherMapData();

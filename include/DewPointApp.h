@@ -3,6 +3,7 @@
 #include <ConfigHandler.h>
 #include <StatusHandler.h>
 #include <EventHandler.h>
+#include <DewSensor.h>
 
 
 struct AppConfig {
@@ -23,7 +24,11 @@ class CDewPointApp : public IConfigHandler, public IStatusHandler, public IMsgEv
     public:
         AppStatus Status;
         AppConfig Config;
+        DewStatus *pIndoorStatus;
+        DewStatus *pOutdoorStatus;
 
+
+        void dispatch();
         // Implement the Interfaces
         int receiveEvent(const void * pSender, int nMsg, const void * pData, int nType) override;
         void writeStatusTo(JsonObject & oData) override;
