@@ -6,7 +6,7 @@
  * Insert your application specific static pages here, also
  * as the defaults and the registration/handling of API's
  * 
- * 
+ * You have to touch this file, to compile after changing the includes
  */
 
 
@@ -15,6 +15,7 @@
 #include <web/index.html.gz.h>
 #include <web/app.css.gz.h>
 #include <web/_runtime.css.gz.h>
+#include <web/settings.js.gz.h>
 #include <web/_runtime.js.gz.h>
 #include <web/_pages.html.gz.h>
 #include <web/_pages.js.gz.h>
@@ -26,32 +27,37 @@ void sendGzipResponse(AsyncWebServerRequest *pRequest, AsyncWebServerResponse *p
     pResponse->addHeader("Content-Encoding", "gzip");
     pRequest->send(pResponse);
 }
-
+ 
 void registerWebRoutes(CWebServer &oWebServer) {
+    DEBUG_FUNC_START();
     oWebServer.registerDefaults();
     oWebServer.registerFileAccess();
     
     oWebServer.on("/index.html", HTTP_GET, [](AsyncWebServerRequest *request) {
+        DEBUG_INFOS("WS: request on : %s",request->url().c_str());
         sendGzipResponse(request,
                          request->beginResponse_P(
                             200,
-                            F("text/html"),
+                            "text/html",
                             index_html_gz, 
                             index_html_gz_len)
                         );
+                        
 	});
 
     oWebServer.on("/_pages.html", HTTP_GET, [](AsyncWebServerRequest *request) {
+        DEBUG_INFOS("WS: request on : %s",request->url().c_str());
         sendGzipResponse(request,
                          request->beginResponse_P(
                             200,
-                            F("text/html"),
+                            "text/html",
                             _pages_html_gz, 
                             _pages_html_gz_len)
                         );
 	});
 
     oWebServer.on("/css/_runtime.css", HTTP_GET, [](AsyncWebServerRequest *request) {
+        DEBUG_INFOS("WS: request on : %s",request->url().c_str());
 		sendGzipResponse(request,
                          request->beginResponse_P(
                             200,
@@ -63,6 +69,7 @@ void registerWebRoutes(CWebServer &oWebServer) {
 
 
     oWebServer.on("/css/app.css", HTTP_GET, [](AsyncWebServerRequest *request) {
+        DEBUG_INFOS("WS: request on : %s",request->url().c_str());
 		sendGzipResponse(request,
                          request->beginResponse_P(
                             200,
@@ -71,9 +78,19 @@ void registerWebRoutes(CWebServer &oWebServer) {
                             app_css_gz_len)
                         );
 	});
-
+    oWebServer.on("/js/settings.js", HTTP_GET, [](AsyncWebServerRequest *request) {
+        DEBUG_INFOS("WS: request on : %s",request->url().c_str());
+        sendGzipResponse(request,
+                         request->beginResponse_P(
+                            200,
+                            F("text/javascript"),
+                            settings_js_gz, 
+                            settings_js_gz_len)
+                        );
+	});
 
 	oWebServer.on("/js/_runtime.js", HTTP_GET, [](AsyncWebServerRequest *request) {
+        DEBUG_INFOS("WS: request on : %s",request->url().c_str());
         sendGzipResponse(request,
                          request->beginResponse_P(
                             200,
@@ -84,6 +101,7 @@ void registerWebRoutes(CWebServer &oWebServer) {
 	});
 
 	oWebServer.on("/js/_pages.js", HTTP_GET, [](AsyncWebServerRequest *request) {
+        DEBUG_INFOS("WS: request on : %s",request->url().c_str());
         sendGzipResponse(request,
                          request->beginResponse_P(
                             200,
@@ -94,6 +112,7 @@ void registerWebRoutes(CWebServer &oWebServer) {
 	});
 
     oWebServer.on("/i18n/de.json", HTTP_GET, [](AsyncWebServerRequest *request) {
+        DEBUG_INFOS("WS: request on : %s",request->url().c_str());
         sendGzipResponse(request,
                          request->beginResponse_P(
                             200,
@@ -103,6 +122,7 @@ void registerWebRoutes(CWebServer &oWebServer) {
                         );
 	});
     oWebServer.on("/i18n/en.json", HTTP_GET, [](AsyncWebServerRequest *request) {
+        DEBUG_INFOS("WS: request on : %s",request->url().c_str());
         sendGzipResponse(request,
                          request->beginResponse_P(
                             200,
@@ -111,4 +131,9 @@ void registerWebRoutes(CWebServer &oWebServer) {
                             en_json_gz_len)
                         );
 	});
+    DEBUG_FUNC_END();
 }
+/* touched by page compiler : 1756115908015 */
+/* touched by page compiler : 1756116030265 */
+/* touched by page compiler : 1756116140771 */
+/* touched by page compiler : 1756116284600 */

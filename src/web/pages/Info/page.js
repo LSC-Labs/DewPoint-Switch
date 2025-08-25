@@ -38,7 +38,7 @@ class CInfoPage extends CPageHandler {
      * @overload
      */
     loadPageConfig(pView, pApp) {
-        let oStatus = pApp.DeviceStatus.dew;
+        let oStatus = pApp.DeviceStatus.dewswitch;
         this._createThermo(pView.gel("#intTemp"), {
             type: "T",
             label: "12°",

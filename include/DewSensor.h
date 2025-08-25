@@ -2,22 +2,25 @@
 #include <Arduino.h>
 #include <Appl.h>
 #include <AppConfig.h>
+#include <EventHandler.h>
 #include <DHT.h>
 
 struct DewStatus {
-    float TempRaw = NAN;
-    float HumidityRaw = NAN;
-    float TempC = NAN;
-    float Humidity = NAN;
-    float DewPoint = NAN;
+    float TempRawC      = NAN;
+    float TempRawF      = NAN;
+    float HumidityRaw   = NAN;
+    float TempC         = NAN;
+    float TempF         = NAN;
+    float Humidity      = NAN;
+    float DewPoint      = NAN;
     int           SensorLocation = -1;
     unsigned long LastCallMillis = 0;
 
 };
 
 struct DewConfig {
-    bool bIsSensor = true;
-    float adjustTempC = 0.0;        // Temperature adjustment
+    bool bIsPhysicalSensor = true;
+    float adjustTempC = 0.0;        // Temperature adjustment in °C
     float adjustHumidity = 0.0;     // Humidity adjustment
     /** only needed if open weather map is used **/
     // String strWeatherURL = "https://api.openweathermap.org/data/3.0/onecall";
@@ -30,31 +33,37 @@ struct DewConfig {
 
 };
 
-class CDewSensor : public IConfigHandler,public IStatusHandler { //  : IConfigHandler, IStatusHandler {
+class CDewSensor : public IMsgEventReceiver, public IConfigHandler,public IStatusHandler { //  : IConfigHandler, IStatusHandler {
     protected:
         DewConfig Config;
-        DewStatus Status;
+        
         DHT *pSensor = nullptr;
         JsonDocument OpenWeatherData;
+        bool isInternetPossible = false;
 
     public:
+        DewStatus Status;
+
+    public: 
         CDewSensor();
         ~CDewSensor();
         CDewSensor(int nPort, int nSensorType, int nLocation);
 
         void setup(int nPort, int nSensorType, int nLocation);
-        void dispatch();
-        float setTemperature(float fRawTemp);
-        float setHumidity(float fRawHumi);
+        
         void writeStatusTo(JsonObject & oObj) override;
         void readConfigFrom(JsonObject & oCfg) override;
         void writeConfigTo(JsonObject & oCfg, bool bHideCritical) override;
-
+        int  receiveEvent(const void * pSender, int nMsg, const void * pData, int nType) override;
+        float getTemperature(bool bAsFarenheit = false);
+        float getHumidity();
+        float getDewPoint();
+        float calculateDewPoint(float fTemp, float fHum, bool bAsFarenheit = false);
 
     protected:
-        void updateFromWeatherMapData();
-        float getRawTemperature(bool bAsFarenheit = false);
-        float getRawHumidity();
-        float calculateDewPoint(float fTemp, float fHum);
+        float adjustAndStoreTemperatures(float fRawTemp, bool bAsFarenheit = false);
+        float adjustAndStoreHumidity(float fRawHumi);
+        void  updateFromWeatherMapData();
+        
 };
 

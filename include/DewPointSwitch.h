@@ -2,7 +2,6 @@
 
 #include <ConfigHandler.h>
 #include <StatusHandler.h>
-#include <EventHandler.h>
 #include <DewSensor.h>
 
 
@@ -20,17 +19,23 @@ struct AppStatus {
     String externalErrorMsg = "";
 };
 
-class CDewPointApp : public IConfigHandler, public IStatusHandler, public IMsgEventReceiver {
+class CDewPointSwitch : public IConfigHandler, public IStatusHandler{
     public:
         AppStatus Status;
         AppConfig Config;
-        DewStatus *pIndoorStatus;
-        DewStatus *pOutdoorStatus;
+        // DewStatus *pIndoorStatus;
+        // DewStatus *pOutdoorStatus;
+        
+        CDewSensor SID;
+        CDewSensor SOD;
 
+        CDewPointSwitch(CDewSensor &oSID,CDewSensor &oSOD) {
+            SID = oSID;
+            SOD = oSOD;
+        }
 
         void dispatch();
         // Implement the Interfaces
-        int receiveEvent(const void * pSender, int nMsg, const void * pData, int nType) override;
         void writeStatusTo(JsonObject & oData) override;
         void readConfigFrom(JsonObject & oCfg) override;
         void writeConfigTo(JsonObject & oCfg, bool bHideCritical) override;

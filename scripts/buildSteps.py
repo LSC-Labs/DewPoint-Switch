@@ -78,6 +78,8 @@ def after_build(source, target, env):
 	strTargetFile = getTargetFirmwareName(env)
 	print(f'... storing final firmware bin to "{strTargetFile}"')
 	shutil.copy(FIRMWARE_SOURCE,strTargetFile)
+	nSize = os.path.getsize(strTargetFile)
+	print(f'    ==>  {nSize} bytes written...')
 
 def before_build(source, target, env):
 	strEnv = env.subst("$PIOENV")

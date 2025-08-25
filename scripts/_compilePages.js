@@ -82,57 +82,53 @@ function minimizeLanguages(cb) {
 // #endregion
 
 // #region build of cpp header information of packed files
-/**
- * buildHeaderFiles()
- * - build the c includeable header files of the zipped files (*.gz)
- * Only this files are needed by the program - if you choose to include them into the code.
- * @param {*} cb 
- * @returns 
- */
+
 function buildHeaderFiles(cb) {
-    let strScanMask = Settings.getWebPackedPath() + "*/*.gz";
-    console.log("Building headers files from : " + strScanMask)
-    return(
-        pump([
-            gulp.src(strScanMask),
-            debug({ title: 'building :'}),
-            flatmap( function(oStream, oFile) {
-                let strFileName = path.basename(oFile.path);
-                let strTargetPath = path.join(Settings.getIncludePath(),"web") ;
-                if(!fs.existsSync(strTargetPath))  {
-                    fs.mkdirSync(strTargetPath,{ recursive: true });
-                }
-                let strTargetFile = path.join(strTargetPath,strFileName + ".h");
-                console.log(" --- writing : " + strTargetFile);
-                let oWS = fs.createWriteStream(strTargetFile);
-                oWS.on("error", function(err) {
-                    gutil.log(err);
-                });
-                console.log("writing: " + strTargetFile)
-                let oData = oFile.contents;
-                oWS.write('#pragma once\n');
-                oWS.write("// -------------------------------------------------------------------\n")
-                oWS.write('// LSC-Labs auto generated file : ' + strFileName + '.h\n');
-                oWS.write('// ' + Date() + '\n');
-                oWS.write("// -------------------------------------------------------------------\n")
-                oWS.write('// do not touch - changes will be overwritten...' + '\n');
-                oWS.write("// -------------------------------------------------------------------\n")
-                oWS.write("#define " + strFileName.replace(/\.|-/g, "_") + "_len " + oData.length + "\n");
-                oWS.write("const uint8_t " + strFileName.replace(/\.|-/g, "_") + "[] PROGMEM = {")
-                
-                for (let i = 0; i < oData.length; i++) {
+
+    // let strScanMask = Settings.getWebPackedPath() + "/*.gz";
+    let fTotalSize = 0;
+    let strIncludePath = Settings.getIncludePath();
+    let strPackedPath = Settings.getWebPackedPath();
+    fs.readdirSync(strPackedPath).forEach(strFileName => {
+        if(strFileName.endsWith(".gz")) {
+            let strPackedFileName = path.join(strPackedPath,strFileName);
+            let strHeaderFileName = path.join(strIncludePath,strFileName+ ".h");
+            let nPackedFileSize = fs.statSync(strPackedFileName).size;
+            let tData = fs.readFileSync(strPackedFileName);
+            if(nPackedFileSize == tData.length) {
+                console.log(` - file size (${nPackedFileSize})\tis OK ${strPackedFileName}\t ==> ${strHeaderFileName}`);
+                let strIncludeName = path.basename(strPackedFileName);
+                let oWS = fs.createWriteStream(strHeaderFileName);
+                oWS.on("error", function(oErr) { gutil.log(oErr) });
+                oWS.write("#pragma once\n");
+                oWS.write("#define " + strIncludeName.replace(/\.|-/g, "_") + "_len " + nPackedFileSize + "\n");
+                oWS.write("const uint8_t " + strIncludeName.replace(/\.|-/g, "_") + "[] PROGMEM = {")
+                for(let i = 0; i < tData.length; i++) {
                     if (i % 1000 == 0) oWS.write("\n");
-                    oWS.write('0x' + ('00' + oData[i].toString(16)).slice(-2));
-                    if (i < oData.length - 1) oWS.write(',');
+                    oWS.write('0x' + ('00' + tData[i].toString(16)).slice(-2));
+                    if (i < tData.length - 1) oWS.write(',');
                 }
-    
-                oWS.write("\n};")
+                oWS.write("\n};");
                 oWS.end();
-    
-                return oStream;
-            })
-        ])
-    )
+                fTotalSize += nPackedFileSize;
+            }
+        }
+    });
+    console.log("==================================================================");
+    console.log("Web Frontend size in memory : " + fTotalSize + " bytes");
+    console.log("==================================================================");
+    let strTouchFile = Settings.getData("touchAfterPagesCompiled");
+    console.log("Checking touch file : " + strTouchFile);
+    if(strTouchFile && fs.existsSync(strTouchFile)) {
+        console.log("touching file : " + strTouchFile);
+        let changedModifiedTime = new Date();
+        let changedAccessTime = new Date();
+        fs.utimesSync(strTouchFile, changedAccessTime, changedModifiedTime);
+
+        // as touching does not trigger the compile, append a line as comment...
+        fs.appendFileSync(strTouchFile,"/* touched by page compiler : " + changedModifiedTime.getTime() + " */\n");   
+    }
+    cb();
 }
 
 // #endregion

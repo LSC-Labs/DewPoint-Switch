@@ -17,14 +17,13 @@
     "url": "git+https://github.com/lsc-labs/ESP-ProjectTemplate.git"
   },
   "scripts": {
-    "compile-Pages": "gulp compilePages",
-    "build-Pages": "gulp buildPages",
+    "watch-Pages": "watchlist src/web/pages lib/PLibESPV1/src/web/pages -- npm run update-Pages",
+    "update-Pages": "npm run build-Pages && npm run compile-Pages",
     "sync-Files": "gulp syncFiles",
     "watch-css": "sass --watch --style expanded --source-map --embed-sources --no-error-css scss/:src/web/css/",
     "css-compile": "sass       --style expanded --source-map --embed-sources --no-error-css scss/:src/web/css/",
-    "js-join": "python3 scripts/joinFiles.py --sourceDir web/js --fileMask '*.js' --targetFile src/web/js/_joined.js",
-    "watch-js-join": "watchlist web/js -- npm run js-join",
-    "git-updSub": "git submodule update --remote --merge"
+    "compile-Pages": "gulp compilePages",
+    "build-Pages": "gulp buildPages"
   },
   "author": "LSC Labs - P.Liebl",
   "license": "MIT",
