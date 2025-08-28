@@ -1,7 +1,16 @@
+
+
+
 <!--
     Dew Point Page
 -->
-<div id="DewPointPage" data-menu='{"name":"Settings|DewPoint","title":"Dew Point", "icon":"Status"}'>
+<div id="DewSwitchPage" data-menu='{"name":"Settings|DewSwitch","title":"Thresholds", "icon":"Fan"}'>
+    <PageVars>
+        { 
+            "val-thermo":"(^[+\\-]?\\d{1,2}$)|(^[+\\-]?\\d{1,2}[\\.,]\\d{1}$)"
+        }
+    </PageVars> 
+
     <legend data-i18n="DewPoint.legend"></legend>
     <div class="pageDesc" data-i18n="DewPoint.title"></div>
     <!-- Hysteresis setting -->
@@ -12,7 +21,7 @@
         </label>
         <span class="$(col-input-class)">
             <input data-cfg="hysteresis" class="form-control input-sm" type="text" 
-                pattern="^[+\-]?\d{1,2}[\.,]\d{1}$" value="0">
+                pattern="$(val-thermo)" value="0">
         </span>
     </div>
     <!-- Activation delta setting -->
@@ -23,7 +32,7 @@
         </label>
         <span class="$(col-input-class)">
             <input data-cfg="dewdelta" class="form-control input-sm" type="text" 
-                pattern="^[+\-]?\d{1,2}[\.,]\d{1}$" value="0">
+                pattern="(^[+\-]?\d{1,2}$)|(^[+\-]?\d{1,2}[\.,]\d{1}$)" value="0">
         </span>
     </div>
 
@@ -35,7 +44,7 @@
         </label>
         <span class="$(col-input-class)">
             <input data-cfg="minIntern" class="form-control input-sm" type="text" 
-                pattern="^[+\-]?\d{1,2}[\.,]\d{1}$">
+                pattern="(^[+\-]?\d{1,2}$)|(^[+\-]?\d{1,2}[\.,]\d{1}$)">
         </span>
     </div>
 
@@ -47,7 +56,7 @@
         </label>
         <span class="$(col-input-class)">
             <input data-cfg="minExtern" class="form-control input-sm" type="text" 
-                pattern="^[+\-]?\d{1,2}[\.,]\d{1}$">
+                pattern="(^[+\-]?\d{1,2}$)|(^[+\-]?\d{1,2}[\.,]\d{1}$)">
         </span>
     </div>
 
@@ -55,119 +64,97 @@
 </div>
 
 
-<div id="SensorsPage" data-menu='{"name":"Settings|Sensors","title":"Dew Point Sensors", "icon":"Status"}'>
-    <legend data-i18n="DewSensors.legend"></legend>
-    <div class="pageDesc" data-i18n="DewSensors.title"></div>
+<div id="SensorsPage" data-menu='[
+                                    {"name":"Settings|SensorsID","title":"Sensor Indoor", "icon":"Thermo", 
+                                        "attr": { "data-cfg": "sensorID" }, 
+                                        "payload":{"vars": { "type":"ID"}}
+                                    },
+                                    {"name":"Settings|SensorsOD","title":"Sensor Outdoor", "icon":"Thermo",
+                                        "attr": { "data-cfg": "sensorOD" }, 
+                                        "payload":{"vars": { "type":"OD"}}
+                                    }
+                                ]'>
+  
+    <legend><span data-i18n="Sensor.legend"></span>  (<span data-i18n="Sensor.$(type)"></span>)</legend>
+    <div class="pageDesc" data-i18n="Sensor.title"> </div>
 
-    
-    <div class="groupPanel">
-        <div class="groupTitle">Sensor intern</div>
-        <div class="row form-group" data-auth="RO">
-            <label class="$(col-label-class) info-icon" data-i18n="@title:DewSensors.adjust_t.info">
-                <span data-i18n="DewSensors.adjust_t.label"></span>
-                <icon data-icon="Info"></icon>
-            </label>
-            <span class="$(col-input-class)">
-                <input data-cfg="sensorID.adjust_temp" class="form-control input-sm" type="text" 
-                    pattern="^[+\-]?\d{1,2}[\.,]\d{1}$" value="0">
-            </span>
-        </div>
-        <div class="row form-group" data-auth="RO">
-            <label class="$(col-label-class) info-icon" data-i18n="@title:DewSensors.adjust_h.info">
-                <span data-i18n="DewSensors.adjust_h.label"></span>
-                <icon data-icon="Info"></icon>
-            </label>
-            <span class="$(col-input-class)">
-                <input data-cfg="sensorID.adjust_humidity" class="form-control input-sm" type="text" 
-                    pattern="^[+\-]?\d{1,2}[\.,]\d{1}$" value="0">
-            </span>
+    <!-- Physical sensor or open weather map -->
+    <div class="row form-group" style="display:none" >
+        <label class="$(col-label-class) info-icon" data-i18n="@title:Sensor.physical.info">
+            <span data-i18n="Sensor.physical.label"></span>
+            <icon data-icon="Info"></icon>
+        </label>
+         <div class="$(col-input-class)">
+            <form>
+                <label class="radio-inline">
+                    <input type="radio" value="1" name="physical" disabled>
+                    <span data-i18n="main.yes">Y</span>
+                </label> 
+                <label class="radio-inline">
+                    <input type="radio" value="0" name="physical" checked disabled> 
+                    <span data-i18n="main.no">N</span>
+                </label>
+            </form>
         </div>
     </div>
-
-    <div class="groupPanel">
-        <div class="groupTitle">Sensor extern</div>
-        <div class="row form-group" data-auth="RO">
-            <label class="$(col-label-class) info-icon" data-i18n="@title:DewSensors.adjust_t.info">
-                <span data-i18n="DewSensors.adjust_t.label"></span>
+    <!-- Adjust Temperature settings-->
+    <div class="row form-group" data-auth="RO">
+        <label class="$(col-label-class) info-icon" data-i18n="@title:Sensor.adjust_t.info">
+            <span data-i18n="Sensor.adjust_t.label"></span>
+            <icon data-icon="Info"></icon>
+        </label>
+        <span class="$(col-input-class)">
+            <input data-cfg="adjust_temp" class="form-control input-sm" type="text" 
+                pattern="(^[+\-]?\d{1,2}$)|(^[+\-]?\d{1,2}[\.,]\d{1}$)" value="0">
+        </span>
+    </div>
+    <!-- Adjust Humidity  settings-->
+    <div class="row form-group" data-auth="RO">
+            <label class="$(col-label-class) info-icon" data-i18n="@title:Sensor.adjust_h.info">
+                <span data-i18n="Sensor.adjust_h.label"></span>
                 <icon data-icon="Info"></icon>
             </label>
             <span class="$(col-input-class)">
-                <input data-cfg="sensorOD.adjust_temp" class="form-control input-sm" type="text" 
-                    pattern="^[+\-]?\d{1,2}[\.,]\d{1}$" value="0">
+                <input data-cfg="adjust_humidity" class="form-control input-sm" type="text" 
+                    pattern="(^[+\-]?\d{1,2}$)|(^[+\-]?\d{1,2}[\.,]\d{1}$)" value="0">
             </span>
         </div>
+    
+    <!-- Open Weather settings -->
+    <div data-viewon="physical=0" data-auth="RO">
         <div class="row form-group" data-auth="RO">
-            <label class="$(col-label-class) info-icon" data-i18n="@title:DewSensors.adjust_h.info">
-                <span data-i18n="DewSensors.adjust_h.label"></span>
+            <label class="$(col-label-class) info-icon" data-i18n="@title:Sensor.open.appID.info">
+            <span data-i18n="Sensor.open.appID.label"></span>
                 <icon data-icon="Info"></icon>
             </label>
             <span class="$(col-input-class)">
-                <input data-cfg="sensorOD.adjust_humidity" class="form-control input-sm" type="text" 
-                    pattern="^[+\-]?\d{1,2}[\.,]\d{1}$" value="0">
-            </span>
-        </div>
-         <!-- Set the type of Sensor we are using -->
-        <div class="row form-group" data-auth="RO">
-            <label class="$(col-label-class) info-icon" data-i18n="@title:DewSensors.sensorType.info">
-                <span data-i18n="DewSensors.sensorType.label"></span>
-                <icon data-icon="Info"></icon>
-            </label>
-            <div class="$(col-input-class)" data-i18n="DewSensors.open.name">
-            </div>
-            <!--
-            <div class="$(col-input-class)">
-                <select id="intern_type" class="form-control input-sm">
-                    <option value="99">Open weather (Internet)</option>
-                    <option value="11">DHT 11</option>
-                    <option value="12">DHT 12</option>
-                    <option value="21">DHT 21 / AM2301</option>
-                    <option value="22">DHT 22</option>
-                </select>
-            </div>
-            -->
-        </div>
-
-        <!-- Set the application ID  open weather url -->
-        <div class="row form-group" data-auth="RO">
-            <label class="$(col-label-class) info-icon" data-i18n="@title:DewSensors.open.appID.info">
-            <span data-i18n="DewSensors.open.appID.label"></span>
-                <icon data-icon="Info"></icon>
-            </label>
-            <span class="$(col-input-class)">
-                <input data-cfg="sensorOD.web_key" class="form-control input-sm" type="text">
+                <input data-cfg="web_key" class="form-control input-sm" type="text">
             </span>
         </div>
 
         <!-- Set the longitude for  open weather -->
         <div class="row form-group" data-auth="RO">
-            <label class="$(col-label-class) info-icon" data-i18n="@title:DewSensors.open.long.info">
-            <span data-i18n="DewSensors.open.long.label"></span>
+            <label class="$(col-label-class) info-icon" data-i18n="@title:Sensor.open.long.info">
+            <span data-i18n="Sensor.open.long.label"></span>
                 <icon data-icon="Info"></icon>
             </label>
             <span class="$(col-input-class)">
-                <input data-cfg="sensorOD.web_long" class="form-control input-sm" type="text">
+                <input data-cfg="web_long" class="form-control input-sm" type="text">
             </span>
         </div>
 
          <!-- Set the latitude for  open weather -->
         <div class="row form-group" data-auth="RO">
-            <label class="$(col-label-class) info-icon" data-i18n="@title:DewSensors.open.lat.info">
-            <span data-i18n="DewSensors.open.lat.label"></span>
+            <label class="$(col-label-class) info-icon" data-i18n="@title:Sensor.open.lat.info">
+            <span data-i18n="Sensor.open.lat.label"></span>
                 <icon data-icon="Info"></icon>
             </label>
             <span class="$(col-input-class)">
-                <input data-cfg="sensorOD.web_lat" class="form-control input-sm" type="text">
+                <input data-cfg="web_lat" class="form-control input-sm" type="text">
             </span>
         </div>
 
-
     </div>
-
-
-
-   
-
-
 
     <div class="row form-group" data-element-type="save-btn-row"></div>
 </div>

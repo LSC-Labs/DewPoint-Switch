@@ -338,6 +338,7 @@ export class CConfig {
     getWebSourcePath()  { return(this.getData("locations.webSource"   ,"src/web"))}
     getWebDistPath()    { return(this.getData("locations.webDist"     ,"dist/web"))}
     getWebPackedPath()  { return(this.getData("locations.webPacked"   ,"tmp/web"))}
+    getWebTempPath()    { return(this.getData("locations.webTemp"     ,"tmp/web"))}
     getIncludePath()    { return(this.getData("locations.includes"    ,"include"))}
 
 

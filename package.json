@@ -1,20 +1,20 @@
 {
-  "name": "esp-projecttemplate",
+  "name": "dewpoint-switch",
   "version": "0.1.0",
-  "description": "ESP Template for smart devices",
+  "description": "Dew Point Switch",
   "main": "index.js",
   "type": "module",
   "directories": {
     "lib": "lib",
     "test": "test"
   },
-  "homepage": "https://github.com/lsc-labs/ESP-ProjectTemplate#readme",
+  "homepage": "https://github.com/lsc-labs/DewPoint-Switch#readme",
   "bugs": {
-    "url": "https://github.com/lsc-labs/ESP-ProjectTemplate/issues"
+    "url": "https://github.com/lsc-labs/DewPoint-Switch/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lsc-labs/ESP-ProjectTemplate.git"
+    "url": "git+https://github.com/lsc-labs/DewPoint-Switch.git"
   },
   "scripts": {
     "watch-Pages": "watchlist src/web/pages lib/PLibESPV1/src/web/pages -- npm run update-Pages",
@@ -33,11 +33,13 @@
     "footable": "^2.0.6",
     "gulp": "^5.0.1",
     "gulp-clean-css": "^4.3.0",
+    "gulp-css-purge": "^3.0.9",
     "gulp-debug": "^5.0.1",
     "gulp-flatmap": "^1.0.2",
     "gulp-gzip": "^1.4.2",
     "gulp-htmlmin": "^5.0.1",
     "gulp-jsonmin": "^1.2.0",
+    "gulp-preprocess": "^5.0.0",
     "gulp-uglify": "^3.0.2",
     "jquery": "^3.7.1",
     "pump": "^3.0.3",

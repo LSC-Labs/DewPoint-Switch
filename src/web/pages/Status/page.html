@@ -1,5 +1,5 @@
 <!-- 
-    Status - Page 
+    Status - Page for Dew Point Switch
 -->
 <div id="StatusPage">
     <!-- Status of $(prog_name) Ver.: $(prog_ver) -->
@@ -9,9 +9,10 @@
     <div class="row text-center">
         <div class="col-md-8 col-md-offset-2">
 
+            <!-- Device Status Table -->
             <div class="panel panel-default table-responsive">
                 <table class="table table-hover table-striped table-condensed">
-                    <!-- Device -->
+                    
                     <caption data-i18n="Status.panel.device"></caption>
                     <tr>
                         <!-- system/host name -->
@@ -46,15 +47,52 @@
                             </div>
                         </td>
                     </tr>
+                    <!-- Battery not available -->
+                    <!--
                     <tr>
-                        <!-- Battery -->
+                        
                         <th data-i18n="Status.battery" ></th>
                         <td ><span data-cfg="bat_power"></span> V</td>
                     </tr>
+                    -->
 
                 </table>
             </div>
 
+            <!-- Dew Point Switch Status Table -->
+            <div class="panel panel-default table-responsive">
+                <table class="table table-hover table-striped table-condensed">
+                    <!-- MQTT -->
+                    <caption data-i18n="Status.panel.dewpoint"></caption>
+                    <tr>
+                        <!-- fan active -->
+                        <th data-i18n="Status.fan.active"></th>
+                        <td data-cfg="fan_active"></td>
+                    </tr>
+                    <tr>
+                        <!-- sensor Indoor -->
+                        <th data-i18n="Status.sensor.ID"></th>
+                        <td>
+                            <span data-cfg="sensorID_temp_c"></span>°C / 
+                            <span data-cfg="sensorID_hum"></span>%
+                            => (<span data-i18n="Status.sensor.dewpoint"></span>:
+                            <span data-cfg="sensorID_dew_point"></span>°C)
+                        </td>
+                    </tr>
+                    <tr>
+                        <!-- sensor Outdoor -->
+                        <th data-i18n="Status.sensor.OD"></th>
+                        <td>
+                            <span data-cfg="sensorOD_temp_c"></span>°C / 
+                            <span data-cfg="sensorOD_hum"></span>%
+                            => (<span data-i18n="Status.sensor.dewpoint"></span>:
+                            <span data-cfg="sensorOD_dew_point"></span>°C)
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Network and WiFi Status Table-->
             <div class="panel panel-default table-responsive">
                 <table class="table table-hover table-striped table-condensed">
                     <!-- Network -->
@@ -97,6 +135,7 @@
                 </table> 
             </div>
             
+            <!-- Message Broker Status Table -->
             <div class="panel panel-default table-responsive">
                 <table class="table table-hover table-striped table-condensed">
                     <!-- MQTT -->

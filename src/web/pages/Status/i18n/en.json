@@ -4,7 +4,8 @@
         "panel" : {
             "device"    : "Device",
             "network"   : "Network",
-            "mqtt"      : "Message broker"    
+            "mqtt"      : "Message broker",
+            "dewpoint"  : "Dew Point switch" 
 
         },
         "hostname"  : "Systemname",
@@ -26,7 +27,17 @@
         "lastConLost"   : "Last Connection lost",
         "disconReason"  : "Disconnect reason",
         "memOK"         : "$(sketch_size) Kb used of $(flash_available) Kb => $(flash_used_percent)%",
-        "memWarn"       : "Too less memory to update via OTA ! $(flash_used_percent)% used."
+        "memWarn"       : "Too less memory to update via OTA ! $(flash_used_percent)% used.",
+        "dewpoints"     : "Dew Points In / Out",
+
+        "fan": {
+            "active": "Fan active"
+        },
+        "sensor": {
+            "OD": "Sensor (Outdoor)",
+            "ID": "Sensor (Indoor)",
+            "dewpoint": "DP"
+        }
 
     }
 }

@@ -2,7 +2,8 @@
     "locations": {
         "webSource": "src/web",
         "webDist"  : "dist/web",
-        "webPacked": "dist/tmp",
+        "webTemp"  : "tmp/web",
+        "webPacked": "tmp/web",
         "includes" : "include/web"
     },
 

@@ -22,9 +22,12 @@
             }
         }
     },
-    "DewSensors": {
-        "legend": "Dew Point Sensors",
-        "title" : "Set and adjust the dew point sensors",
+    
+    "Sensor": {
+        "legend": "Dew Point Sensor",
+        "title" : "Set and adjust the dew point sensor.",
+        "ID": "Indoor",
+        "OD": "Outdoor",
         "adjust_t": {
             "label": "Adjust temp",
             "info" : "Adjust the temperature"
@@ -33,9 +36,9 @@
             "label": "Adjust humidity",
             "info" : "Adjust the humidity"
         },
-        "sensorType": {
-            "label":"Sensor type",
-            "info" :"Select the sensor type you want to use."
+        "physical": {
+            "label":"Physical Sensor",
+            "info" :"Select the sensor is physical, or you use open weather map instead."
         },
         "open": {
             "name": "Open weather map",

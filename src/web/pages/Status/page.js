@@ -45,7 +45,7 @@ class CStatusPage extends CPageHandler {
             oVars.setVar("flash_used_percent",~~nPercentUsed);
             oVars.setVar("flash_available",nAvailableSize);
             oUsageBar.style.width = nPercentUsed + "%";
-            oUsageBar.innerText = ~~(oStatus.sketch_size / 1000) + " Kb";
+            oUsageBar.innerText = ~~(oStatus.sketch_size / 1024) + " KB";
             let oUB = EC(oUsageBar);
             let oTranse = new CTranslator();
             let strI18n = "Status.memOK";

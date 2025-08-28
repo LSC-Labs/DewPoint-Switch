@@ -1,16 +1,19 @@
-
+:root {
+  --color-temp: rgb(203, 71, 41);
+  --color-humidity: var(--sidebar-bg-color);
+}
 /**************/
 
 .thermo {
   height: 130px;
   width: 3rem;
   display: inline-block;
-  
+}
   .thermo-label {
     position: relative;
     text-align: center;
   }
-}
+
 .thermo-glas {
     display:block;
     margin: auto;
@@ -21,17 +24,27 @@
     border-radius: 10px;
     padding: 2px;
     rotate: 180deg;
-    .thermo-liquid {
+  }
+
+.thermo-glas-active {
+  transition: all 1.2s;
+}
+
+.thermo-liquid {
       background-color: rgb(255, 179, 0);
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
       position: relative;
+      transition: all 2.2s;
+}
+
+.thermo-label {
+  padding-top: 5px;
+}
+.thermo-temp {
+      background-color: var(--color-temp);
     }
-    .thermo-temp {
-          background-color: rgb(233, 82, 48);
-        }
-    .thermo-humidity {
-        background-color: rgb(92, 87, 232);
-      }    
-  }
+.thermo-humidity {
+    background-color: var(--color-humidity)
+}   
 
