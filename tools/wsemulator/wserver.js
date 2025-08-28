@@ -17,10 +17,33 @@ const WebSocket = require("ws");
 const fs = require("fs");
 const path = require("path");
 
+// #region Security
+
+// For authentication - simulate Token - has to be the same as in the web - page...
+const AccessToken="JoWaschlEmulator";
+const WS_NEEDS_AUTH = "saveconfig,getbackup,restorebackup,restart,factoryreset";
+
+function needsAuth(strCommand) {
+    let bNeedsAuth = false;
+    WS_NEEDS_AUTH.split(",").forEach(strCmd => {
+        if(strCmd == strCommand) bNeedsAuth = true;
+    });
+    return(bNeedsAuth);
+}
+function isAuthorized(oMsg) {
+    let bIsAuthorized = true;
+    if(needsAuth(oMsg.command)) {
+        bIsAuthorized = (AccessToken == oMsg.token);
+        console.log("checking access token : " + oMsg.token);
+    }
+    return(bIsAuthorized);
+}
+
+// #endregion
 
 // #region setup the websocket server and default Websocket functions
-// For authentication - simulate Token - has to be the same as in the web - page...
-var AccessToken="JoWaschlEmulator";
+
+
 
 const wss = new WebSocket.Server({
     port: 8080
@@ -41,59 +64,63 @@ wss.broadcast = function broadcast(oJsonData) {
 wss.on('connection', function connection(ws) {
     ws.on("error", () => console.log("[W] WebSocket Error - Assume a client is disconnected."));
     ws.on('message', function incoming(message) {
-        let obj = JSON.parse(message);
-        console.log("[I] Request command '" + obj.command +"' received...") ;
-        let strCommand = obj.command ? obj.command.toLowerCase() : "no-command";
-        switch (strCommand) {
+        let oMsg = JSON.parse(message);
+        console.log("[I] Request command '" + oMsg.command +"' received...") ;
+        if(isAuthorized(oMsg)) {
+            let strCommand = oMsg.command ? oMsg.command.toLowerCase() : "no-command";
+            switch (strCommand) {
 
-            case "getstatus":
-                sendStatus();
-                break;
+                case "getstatus":
+                    sendStatus();
+                    break;
 
-            case "getconfig":
-                sendConfig();
-                break;
+                case "getconfig":
+                    sendConfig();
+                    break;
 
-            case "saveconfig":
-                saveConfig(obj.payload);
-                break;
+                case "saveconfig":
+                    saveConfig(oMsg.payload);
+                    break;
 
-            case "getbackup":
-                backupConfig();
-                break;
+                case "getbackup":
+                    backupConfig();
+                    break;
 
-            case "gettime":
-                sendTime();
-                break;
+                case "gettime":
+                    sendTime();
+                    break;
 
-            case "settime":
-                setTime(obj.payload);
-                break;
+                case "settime":
+                    setTime(oMsg.payload);
+                    break;
 
-            case "getfile":
-                sendFile(obj.payload);
-                break;
+                case "getfile":
+                    sendFile(oMsg.payload);
+                    break;
 
-            case "getfilelist":
-                sendFileList();
-                break;
+                case "getfilelist":
+                    sendFileList();
+                    break;
 
-            case "scanwifi":
-                sendWiFiList();
-                break;
+                case "scanwifi":
+                    sendWiFiList();
+                    break;
 
-            case "scanrf433":
-                sendRF433ScanCode();
-                break;
-    
-            case "reboot":
-                console.log(" ----- REBOOTING -----");
-                break;
+                case "scanrf433":
+                    sendRF433ScanCode();
+                    break;
+        
+                case "reboot":
+                    console.log(" ----- REBOOTING -----");
+                    break;
 
-            default:
-                console.log("[W] Unknown command " + strCommand);
-                console.log(obj);
-                break;
+                default:
+                    console.log("[W] Unknown command " + strCommand);
+                    console.log(oMsg);
+                    break;
+            }
+        } else {
+            sendAccessDenied(oMsg);
         }
     });
 });
@@ -152,6 +179,22 @@ function sendPayload(strCommand, strDataType, oPayload, bWithToken) {
         "payload": oPayload
     };
     if(bWithToken === true) oData.auth = AccessToken
+    console.log("[I] sending data on websocket...");
+    console.log(oData)
+    wss.broadcast(oData);
+}
+
+function sendAccessDenied(oMsg) {
+    let oData = {
+        "command": "error",
+        "data":    "401",
+        "AccessToken": "notValid",
+        "payload": {
+            "msg": "access denied",
+            "command": oMsg.command,
+            "type"   : "null"
+        }
+    };
     console.log("[I] sending data on websocket...");
     console.log(oData)
     wss.broadcast(oData);
@@ -270,7 +313,7 @@ function sendWiFiList() {
                     }
                 ];
     sendPayload("update","ssidlist",oPayload);
-
+    
 }
 // #endregion
 
