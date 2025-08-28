@@ -13,4 +13,4 @@ src/web/dev
 src/web/test*
 dist/tmp
 dist/web
-include/web
+include/web/test*

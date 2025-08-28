@@ -1,7 +1,8 @@
 {
   "Info": {
     "legend": "Current measurements",
-    "intern": "Inside",
-    "extern": "Outside"
+    "intern": "Indoor",
+    "extern": "Outdoor",
+    "dewpoint": "Dew Point:"
   }
 }

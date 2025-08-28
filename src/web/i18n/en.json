@@ -223,7 +223,8 @@
     "panel": {
       "device": "Device",
       "network": "Network",
-      "mqtt": "Message broker"
+      "mqtt": "Message broker",
+      "dewpoint": "Dew Point switch"
     },
     "hostname": "Systemname",
     "uptime": "Uptime",
@@ -244,6 +245,66 @@
     "lastConLost": "Last Connection lost",
     "disconReason": "Disconnect reason",
     "memOK": "$(sketch_size) Kb used of $(flash_available) Kb => $(flash_used_percent)%",
-    "memWarn": "Too less memory to update via OTA ! $(flash_used_percent)% used."
+    "memWarn": "Too less memory to update via OTA ! $(flash_used_percent)% used.",
+    "dewpoints": "Dew Points In / Out",
+    "fan": {
+      "active": "Fan active"
+    },
+    "sensor": {
+      "OD": "Sensor (Outdoor)",
+      "ID": "Sensor (Indoor)",
+      "dewpoint": "DP"
+    }
+  },
+  "Firmware": {
+    "legend": "Firmware update (current firmware: $(prog_ver))",
+    "title": "Firmware update is possible. Make a backup first, before updating to avoid loss of data.",
+    "latest": "Current available version online",
+    "install": "Select the version you want to install",
+    "downloadBtn": "Download",
+    "installBtn": "Install",
+    "noInternet": "It seems, there is no internet connection available or the firmware update server is down."
+  },
+  "Info": {
+    "legend": "Current measurements",
+    "intern": "Indoor",
+    "extern": "Outdoor",
+    "dewpoint": "Dew Point",
+    "temp": "Temperature",
+    "hum": "Humidity"
+  },
+  "Sensor": {
+    "legend": "Dew Point Sensor",
+    "title": "Set and adjust the dew point sensor.",
+    "ID": "Indoor",
+    "OD": "Outdoor",
+    "adjust_t": {
+      "label": "Adjust temp",
+      "info": "Adjust the temperature"
+    },
+    "adjust_h": {
+      "label": "Adjust humidity",
+      "info": "Adjust the humidity"
+    },
+    "physical": {
+      "label": "Physical Sensor",
+      "info": "Select the sensor is physical, or you use open weather map instead."
+    },
+    "open": {
+      "name": "Open weather map",
+      "appID": {
+        "label": "App ID",
+        "info": "An open weather app id is needed, register and enter here..."
+      },
+      "long": {
+        "label": "Longitude",
+        "info": "Longitude of your location."
+      },
+      "lat": {
+        "label": "Latitude",
+        "info": "Latitude of your location"
+      }
+    },
+    "intern": {}
   }
 }
