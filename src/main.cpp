@@ -116,7 +116,7 @@ void loop() {
   // oSensorID.dispatch();
   // oSensorOD.dispatch();
 
-  // Know the values are in place... decide
+  // Now the values are in place... decide
   // oDewPointSwitch.dispatch();
   oStatusLED.updateLED();
 
