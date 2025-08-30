@@ -3,9 +3,9 @@
 #include <LSCUtils.h>
 
 #define DEW_CFG_HYSTERESIS      F("hysteresis")
-#define DEW_CFG_DEWDELTA        F("delta")
-#define DEW_CFG_MIN_INTERN      F("min_intern")
-#define DEW_CFG_MIN_EXTERN      F("min_extern")
+#define DEW_CFG_DEWDELTA        F("dewdelta")
+#define DEW_CFG_MIN_INTERN      F("min_indoor")
+#define DEW_CFG_MIN_EXTERN      F("min_outdoor")
 #define DEW_STATUS_ERROR        F("in_error")
 #define DEW_STATUS_INTERRMSG    F("int_error")
 #define DEW_STATUS_EXTERRMSG    F("ext_error")
@@ -22,15 +22,15 @@ void CDewPointSwitch::writeStatusTo(JsonObject & oStatus) {
 void CDewPointSwitch::writeConfigTo(JsonObject & oCfg, bool bHideCritical) {
     oCfg[DEW_CFG_HYSTERESIS] = Config.activationHysteresis;
     oCfg[DEW_CFG_DEWDELTA]   = Config.dewPointActivationDelta;
-    oCfg[DEW_CFG_MIN_INTERN] = Config.minActivationLevelIntern;
-    oCfg[DEW_CFG_MIN_EXTERN] = Config.minActivationLevelExtern;
+    oCfg[DEW_CFG_MIN_INTERN] = Config.minActivationLevelIndoor;
+    oCfg[DEW_CFG_MIN_EXTERN] = Config.minActivationLevelOutdoor;
 }
 
 void CDewPointSwitch::readConfigFrom(JsonObject & oCfg) {
     LSC::setValue(&Config.activationHysteresis,     oCfg[DEW_CFG_HYSTERESIS]);
     LSC::setValue(&Config.dewPointActivationDelta,  oCfg[DEW_CFG_DEWDELTA]);
-    LSC::setValue(&Config.minActivationLevelIntern, oCfg[DEW_CFG_MIN_INTERN]);
-    LSC::setValue(&Config.minActivationLevelExtern, oCfg[DEW_CFG_MIN_EXTERN]);
+    LSC::setValue(&Config.minActivationLevelIndoor, oCfg[DEW_CFG_MIN_INTERN]);
+    LSC::setValue(&Config.minActivationLevelOutdoor, oCfg[DEW_CFG_MIN_EXTERN]);
 }
 
 /// @brief Dispatch and update if needed

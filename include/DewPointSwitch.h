@@ -6,8 +6,8 @@
 
 
 struct AppConfig {
-    float minActivationLevelIntern =  10.0; // Min internal temp to activate
-    float minActivationLevelExtern = -10.0; // Min external temp to activate
+    float minActivationLevelIndoor =  10.0; // Min internal temp to activate
+    float minActivationLevelOutdoor = -10.0; // Min external temp to activate
     float dewPointActivationDelta  =   5.0; // Dewpoint activation Delta between intern/extern
     float activationHysteresis     =   1.0; // Hysteresis / Switch threshold temp
 };
