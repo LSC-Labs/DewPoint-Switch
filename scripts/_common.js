@@ -266,18 +266,21 @@ export class CConfig {
     /**
      * Store the data in the key of the section.
      * If the key contains section information, ensure, the section exists.
-     * @param {*} strKey key to store like "wifi.settings.on" ( => "on")
-     * @param {*} oData  data to be stored in the requested section ( => "wifi.settings" )
+     * @param {string} strKey key to store like "wifi.settings.on" ( => "on")
+     * @param {string|object|Array|number|undefined} oData  data to be stored in the requested section ( => "wifi.settings" )
      */
     setData(strKey, oData) {
-        let oBase = this.getConfig();
-        if(strKey.contains(".")) {
-            let nPos = strKey.lastIndexOf(".");
-            let strPath = strKey.substring(nPos);
-            let strKey  = strKey.substring(nPos +1 );
-            oBase = this.getSection(strPath,true);
-        }
-        oBase[strKey] = oData;
+       
+        if(Utils.isString(strKey)) {
+            let oBase = this.getConfig();
+            let nPos    = strKey.lastIndexOf("."); 
+            if(nPos > -1) {
+                let strPath = strKey.substring(0, nPos);
+                strKey      = strKey.substring(nPos +1 );
+                oBase       = this.getSection(strPath,true);
+            }
+            oBase[strKey] = oData;
+        };
     }
 
     /**

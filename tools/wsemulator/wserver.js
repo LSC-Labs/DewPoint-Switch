@@ -110,8 +110,13 @@ wss.on('connection', function connection(ws) {
                     sendRF433ScanCode();
                     break;
         
-                case "reboot":
+                case "restart":
                     console.log(" ----- REBOOTING -----");
+                    break;
+
+                case "factoryreset":
+                    console.log(" ----- FACTORY RESET -----");
+                    oConfigData = getObjectFromFile("config.json");
                     break;
 
                 default:

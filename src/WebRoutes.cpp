@@ -1,3 +1,6 @@
+#ifndef DEBUG_LSC_WEBSOCKET
+    #undef DEBUGINFOS
+#endif
 /**
  * WebRoutes.cpp
  * 
@@ -134,3 +137,15 @@ void registerWebRoutes(CWebServer &oWebServer) {
     DEBUG_FUNC_END();
 }
 /* touched by page compiler : 1756115908015 */
+/* touched by page compiler : 1756471628752 */
+/* touched by page compiler : 1756480150845 */
+/* touched by page compiler : 1756481381245 */
+/* touched by page compiler : 1756566507046 */
+/* touched by page compiler : 1756566550025 */
+/* touched by page compiler : 1756567540824 */
+/* touched by page compiler : 1756567705836 */
+/* touched by page compiler : 1756568055334 */
+/* touched by page compiler : 1756568143459 */
+/* touched by page compiler : 1756568275697 */
+/* touched by page compiler : 1756568311299 */
+/* touched by page compiler : 1756568375717 */
