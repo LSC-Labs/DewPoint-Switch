@@ -1,5 +1,5 @@
 #ifndef DEBUG_LSC_DEW_SENSOR
-    #undef DEBUG_INFOS
+    #undef DEBUGINFOS
 #endif
 
 #include <LSCUtils.h>
@@ -41,27 +41,38 @@ CDewSensor::CDewSensor() {};
 CDewSensor::~CDewSensor() { if(pSensor != nullptr) free(pSensor); }
 
 CDewSensor::CDewSensor(int nPin, int nSensorType, int nLocation) {
+    DEBUG_FUNC_START();
     setup(nPin,nSensorType,nLocation);
+
 };
 
 void CDewSensor::setup(int nPin, int nSensorType, int nLocation) {
     if(nSensorType == USE_OPEN_WEATHER) {
         Config.bIsPhysicalSensor = false;
+        m_oUpdateDelay.start(this->Config.nWeatherCallTimeout);
     } else {
         this->Config.bIsPhysicalSensor = true;
         this->pSensor =  new DHT(nPin,nSensorType);
         this->pSensor->begin();
+        m_oUpdateDelay.start(this->Config.nSensorReadTimeout);
     }
     Status.SensorLocation = nLocation;    
 };
 
 void CDewSensor::readConfigFrom(JsonObject & oCfg) {
-    LSC::setValue(&Config.bIsPhysicalSensor,            oCfg[SENSOR_CFG_IS_SENSOR]);
+    LSC::setValue(&Config.bIsPhysicalSensor,    oCfg[SENSOR_CFG_IS_SENSOR]);
     LSC::setValue(&Config.adjustHumidity,       oCfg[SENSOR_CFG_ADJUST_HUMIDITY]);
     LSC::setValue(&Config.adjustTempC,          oCfg[SENSOR_CFG_ADJUST_TEMP]);
     LSC::setValue(Config.strWeatherAppID,       oCfg[SENSOR_CFG_OPENWEATHER_KEY]);
     LSC::setValue(Config.strWeatherLongitude,   oCfg[SENSOR_CFG_OPENWEATHER_LONG]);
     LSC::setValue(Config.strWeatherLatitude,    oCfg[SENSOR_CFG_OPENWEATHER_LAT]);
+   DEBUG_INFOS(" ## -> Configured as %s sensor", Config.bIsPhysicalSensor ? "physical" : "open weather");
+    m_oUpdateDelay.printDiag();
+    m_oUpdateDelay.start( Config.bIsPhysicalSensor      ? 
+                            Config.nSensorReadTimeout   :
+                            Config.nWeatherCallTimeout  );
+    m_oUpdateDelay.printDiag();
+    
 }
 
 void CDewSensor::writeConfigTo(JsonObject & oCfg, bool bHideCritical) {
@@ -82,9 +93,9 @@ void CDewSensor::writeStatusTo(JsonObject & oStatus) {
     oStatus[SENSOR_STATUS_HUMIDITY]     = Status.Humidity;
     oStatus[SENSOR_STATUS_HUMIDITY_RAW] = Status.HumidityRaw;
     oStatus[SENSOR_STATUS_DEWPOINT]     = Status.DewPoint;
-    oStatus[SENSOR_STATUS_LAST_UPD_MS]  = Status.LastCallMillis;
+    oStatus[SENSOR_STATUS_LAST_UPD_MS]  = Status.LastWeatherCallMillis;
     if(!Config.bIsPhysicalSensor) {
-        oStatus[SENSOR_STATUS_INTERNET]     = this->isInternetPossible;
+        oStatus[SENSOR_STATUS_INTERNET]     = isInternetAvailable();
     }
 }
 
@@ -96,12 +107,18 @@ void CDewSensor::writeStatusTo(JsonObject & oStatus) {
 /// @return 
 int CDewSensor::receiveEvent(const void * pSender, int nMsg, const void * pData, int nType) {
     switch(nMsg) {
-        case MSG_WIFI_CONNECTED:    this->isInternetPossible = nType == WIFI_STATION_MODE;
+        case MSG_WIFI_CONNECTED:    m_bInternetAvailable = (nType == WIFI_STATION_MODE);
+            DEBUG_INFOS(" ## -> Setting Internet access to %d",isInternetAvailable());
                                     break;
-        case MSG_WIFI_DISABLED :    this->isInternetPossible = false;
+        case MSG_WIFI_DISABLED :    m_bInternetAvailable = false;
+            DEBUG_INFO(" ## -> Disabling Internet access for sensors...");
                                     break;
     }
     return(EVENT_MSG_RESULT_OK);
+}
+
+bool CDewSensor::isInternetAvailable() {
+    return(this->m_bInternetAvailable);
 }
 
 /// @brief Stores the temperature in the Status Object
@@ -109,6 +126,7 @@ int CDewSensor::receiveEvent(const void * pSender, int nMsg, const void * pData,
 /// @param bAsFarenheit if true, fRawData is in Fahrenheit
 /// @return The adjusted temperature in Celsius or Fahrenheit
 float CDewSensor::adjustAndStoreTemperatures(float fRawData, bool bAsFarenheit) {
+    DEBUG_FUNC_START_PARMS("fRawData=%f,bAsFarenheit=%d",fRawData,bAsFarenheit);
     if(!isnan(fRawData)) {
         if(bAsFarenheit) {
             Status.TempRawF =  fRawData;
@@ -122,67 +140,100 @@ float CDewSensor::adjustAndStoreTemperatures(float fRawData, bool bAsFarenheit) 
             Status.TempF = LSC::getFarenheitFromCelsius(Status.TempC);
         }
     } 
+    DEBUG_FUNC_END_PARMS("%f",bAsFarenheit ? Status.TempF : Status.TempC);
     return(bAsFarenheit ? Status.TempF : Status.TempC);
 }
 
 /// @brief Stores the humidity in the Status Object.
 /// @param fRawData 
-/// @return The adjusted value
+/// @return The adjusted value - or if no value is given, the current humidity.
 float CDewSensor::adjustAndStoreHumidity(float fRawData) {
+    DEBUG_FUNC_START_PARMS("fRawData=%f",fRawData);
     if(!isnan(fRawData)) {
         Status.HumidityRaw = fRawData;
         Status.Humidity = fRawData + Config.adjustHumidity;
     }
+    DEBUG_FUNC_END_PARMS("%f",Status.Humidity);
     return(Status.Humidity);
 }
+
+
+void CDewSensor::updateFromPhysicalSensor() {
+    DEBUG_FUNC_START();
+    if(this->pSensor) {
+        if(m_oUpdateDelay.isDone()) {
+            DEBUG_INFO(" ->> reading physical sensor");
+            // Force reading in Celsius
+            try {
+                adjustAndStoreTemperatures(pSensor->readTemperature(false),false);
+                adjustAndStoreHumidity(this->pSensor->readHumidity());
+            } catch(...) {
+                Serial.println("[E] Exception while reading physical sensor");
+            }
+            Status.LastSensorReadMillis = m_oUpdateDelay.restart();
+        } else {
+            DEBUG_INFOS(" -> Next sensor read in %lu ms", m_oUpdateDelay.getRemaining());
+        }
+    }
+    DEBUG_FUNC_END();
+}   
 
 // units=metric <- Default is kelvin !
 // https://api.openweathermap.org/data/2.5/weather?lat=48.251690&lon=11.553641&appid=bf2414e748fff1ee23a45cd32bc61f90
 // {"coord":{"lon":11.5536,"lat":48.2517},"weather":[{"id":800,"main":"Clear","description":"clear sky","icon":"01d"}],"base":"stations","main":{"temp":284.94,"feels_like":283.69,"temp_min":283.79,"temp_max":285.41,"pressure":1022,"humidity":58,"sea_level":1022,"grnd_level":963},"visibility":10000,"wind":{"speed":3.55,"deg":271,"gust":5.75},"clouds":{"all":1},"dt":1744358722,"sys":{"type":2,"id":2013241,"country":"DE","sunrise":1744345891,"sunset":1744394260},"timezone":7200,"id":2859147,"name":"Oberschleißheim
-void  CDewSensor::updateFromWeatherMapData() {
-    if(this->isInternetPossible) {
-        DEBUG_FUNC_START();
-        if(Status.LastCallMillis == 0 || (Status.LastCallMillis + Config.nWeatherCallTimeout) > millis()) {
-            DEBUG_INFOS(" ->> calling web API (%lu + %lu) > %lu",Status.LastCallMillis,Config.nWeatherCallTimeout, millis());
-            String strCallUrl = Config.strWeatherURL + 
-                                "?units=metric"
-                                "&lat=" + Config.strWeatherLatitude + 
-                                "&lon=" + Config.strWeatherLongitude +
-                                "&appid=" + Config.strWeatherAppID +
-                                "&exclude" + Config.strWeatherExclude;
-            // TODO: Implement the call here...
-            //       - send result via MQTT
-            //       - store temperature and humidity in status...
-            DEBUG_INFOS("- Calling : %s", strCallUrl.c_str());
-            std::unique_ptr<BearSSL::WiFiClientSecure>client(new BearSSL::WiFiClientSecure);
-            client->setInsecure();
-            HTTPClient oClient;
-            // WiFiClient oWiFiClient;
-            oClient.begin(*client,strCallUrl);
-            int nCode = oClient.GET();
-            String strBody = oClient.getString();
-            oClient.end();
-            DEBUG_INFOS("Received code : %d", nCode);
-            DEBUG_INFOS("Received data :\n%s",strBody.c_str());
-            if(nCode == 200) {
-                OpenWeatherData.clear();
-                deserializeJson(OpenWeatherData,strBody);
-                // OpenWeatherData["c"] = APP_COPYRIGHT;
-                // OpenWeatherData.set(strBody.c_str());
-                Appl.MsgBus.sendEvent(this,MSG_OPEN_WEATHER_DATA,&OpenWeatherData,Status.DewPoint);
-                DEBUG_INFO(" ------- Analysing received data :");
-                DEBUG_JSON_OBJ(OpenWeatherData);
-                JsonObject oMain = OpenWeatherData["main"].as<JsonObject>();
-                DEBUG_JSON_OBJ(oMain);
-                float fTempC = oMain["temp"];
-                float fHumi  = oMain["humidity"];
-                adjustAndStoreTemperatures(fTempC,false);
-                adjustAndStoreHumidity(fHumi);
+void  CDewSensor::updateFromOpenWeatherMap() {
+    DEBUG_FUNC_START();
+   
+    if(isInternetAvailable()) {
+    
+        if(m_oUpdateDelay.isDone()) {
+            try {
+                DEBUG_INFOS(" ->> calling web API (%lu + %lu) > %lu",Status.LastWeatherCallMillis,Config.nWeatherCallTimeout, millis());
+                String strCallUrl = Config.strWeatherURL + 
+                                    "?units=metric"
+                                    "&lat=" + Config.strWeatherLatitude + 
+                                    "&lon=" + Config.strWeatherLongitude +
+                                    "&appid=" + Config.strWeatherAppID +
+                                    "&exclude" + Config.strWeatherExclude;
+                // TODO: Implement the call here...
+                //       - send result via MQTT
+                //       - store temperature and humidity in status...
+                DEBUG_INFOS("- Calling : %s", strCallUrl.c_str());
+                std::unique_ptr<BearSSL::WiFiClientSecure>client(new BearSSL::WiFiClientSecure);
+                client->setInsecure();
+                HTTPClient oClient;
+                // WiFiClient oWiFiClient;
+                oClient.begin(*client,strCallUrl);
+                int nCode = oClient.GET();
+                String strBody = oClient.getString();
+                oClient.end();
+                DEBUG_INFOS("Received code : %d", nCode);
+                DEBUG_INFOS("Received data :\n%s",strBody.c_str());
+                if(nCode == 200) {
+                    OpenWeatherData.clear();
+                    deserializeJson(OpenWeatherData,strBody);
+                    // OpenWeatherData["c"] = APP_COPYRIGHT;
+                    // OpenWeatherData.set(strBody.c_str());
+                    Appl.MsgBus.sendEvent(this,MSG_OPEN_WEATHER_DATA,&OpenWeatherData,Status.DewPoint);
+                    JsonObject oMain = OpenWeatherData["main"].as<JsonObject>();
+                    DEBUG_JSON_OBJ(oMain);
+                    float fTempC = oMain["temp"];
+                    float fHumi  = oMain["humidity"];
+                    adjustAndStoreTemperatures(fTempC,false);
+                    adjustAndStoreHumidity(fHumi);
+                }
+            } catch(...) {
+                Serial.println("[E] Exception in requesting data from Open weather");
             }
-            Status.LastCallMillis = millis();
+            Status.LastWeatherCallMillis = m_oUpdateDelay.restart();
+            
+            m_oUpdateDelay.printDiag();
+        } else {
+            DEBUG_INFOS(" -> Next internet call in %lu ms", m_oUpdateDelay.getRemaining());
         }
-        DEBUG_FUNC_END();
+        
     }
+    DEBUG_FUNC_END();
 }
 
 /// @brief Get the current Humidity and stores the adjusted values into the Status object
@@ -190,10 +241,10 @@ void  CDewSensor::updateFromWeatherMapData() {
 float CDewSensor::getHumidity() {
     DEBUG_FUNC_START();
     if(this->pSensor) {
-        adjustAndStoreHumidity(this->pSensor->readHumidity());
+        updateFromPhysicalSensor();
     }
     else {
-        updateFromWeatherMapData();
+        updateFromOpenWeatherMap();
     }
     DEBUG_FUNC_END_PARMS(" - humidity    : %f",Status.Humidity);
     return(Status.Humidity);
@@ -203,15 +254,16 @@ float CDewSensor::getHumidity() {
 /// @param bAsFarenheit Retur value in Celsius or Fahrenheit
 /// @return the current (adjusted) temperature
 float CDewSensor::getTemperature(bool bAsFarenheit) {
-    DEBUG_FUNC_START();
+    DEBUG_FUNC_START_PARMS("bAsFarenheit=%d",bAsFarenheit);
     if(this->pSensor) {
-        adjustAndStoreTemperatures(pSensor->readTemperature(bAsFarenheit)); 
+        updateFromPhysicalSensor();
     }
     else {
-        updateFromWeatherMapData();
+        updateFromOpenWeatherMap();
     }
     float fResult = bAsFarenheit ? Status.TempF : Status.TempC;
     DEBUG_FUNC_END_PARMS(" - temperature : %f",fResult);
+
     return(fResult);
 }
 
@@ -251,12 +303,12 @@ float CDewSensor::calculateDewPoint(float fTemp, float fHumidity, bool bAsFarenh
 
 /// @brief Updates Temp and Humidity, calculates the Dew Point and sends the
 ///        SensorStatus object via the message bus.
-float CDewSensor::getDewPoint() {
+float CDewSensor::getDewPoint(bool bInFarenheit) {
+    float fResult = NAN;
     getTemperature();
     getHumidity();
-    float fResult = NAN;
     if(!isnan(Status.TempC) && !isnan(Status.Humidity)) {
-        Status.DewPoint = calculateDewPoint(Status.TempC,Status.Humidity);
+        Status.DewPoint = calculateDewPoint(Status.TempC,Status.Humidity,bInFarenheit);
         fResult = Status.DewPoint;
         Appl.MsgBus.sendEvent(this,MSG_SENSOR_STATUS,&Status,Status.SensorLocation);
     }

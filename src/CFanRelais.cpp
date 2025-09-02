@@ -1,3 +1,6 @@
+#ifndef DEBUG_LSC_DEW_FAN
+    #undef DEBUGINFOS
+#endif
 #include <FanRelais.h>
 
 

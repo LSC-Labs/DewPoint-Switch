@@ -14,12 +14,45 @@ class CStatusPage extends CPageHandler {
        // this.Translator = new CTranslator();
     }
 
+        
+    // #region Update Status on a regular base
+    disposePage(pView, pApp) {
+        super.disposePage(pView, pApp);
+        this.RefreshTimer = clearInterval(this.RefreshTimer);
+        this.RefreshTimer = null;
+    }
+
+    preparePage(pView, pApp) {
+        super.preparePage(pView, pApp);
+        // Set an interval to refresh the status infos every 5 seconds...
+        this.RefreshTimer = setInterval( this.refreshStatus.bind(this, pView, pApp), 5000);
+    }
+    
+    refreshStatus(pView, pApp) {
+        pApp.requestActStatus();
+    }
+
     /**
-     * 
-     * @param {*} pView 
-     * @param {*} pApp 
-     * @returns 
-     * @overload
+     * Triggered, when a new status message is received from the web socket.
+     * @param {CView} pView 
+     * @param {CApp} pApp 
+     * @returns false to avoid loadPageConfig is called again (!) and the game starts again...
+     */
+    onUpdateStatusReceived(pView, pApp) {
+        this.loadPageConfig(pView, pApp);
+        return(false)
+    }
+    // #endregion
+
+
+
+
+    /**
+     * Load the page config...
+     * Request an actual status from the device...
+     * This will trigger an update message, which will be handled in onUpdate_status_Received.
+     * @param {CView} pView 
+     * @param {CApp} pApp 
      */
     loadPageConfig(pView, pApp) {
         let oStatus = pApp.DeviceStatus;
@@ -64,4 +97,5 @@ class CStatusPage extends CPageHandler {
         return(oStatus);
     }
 
+    
 }

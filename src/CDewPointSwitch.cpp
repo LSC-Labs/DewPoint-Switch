@@ -1,6 +1,11 @@
+#ifndef DEBUG_LSC_DEW_SWITCH
+    #undef DEBUGINFOS
+#endif
+
 #include <AppConfig.h>
 #include <DewPointSwitch.h>
 #include <LSCUtils.h>
+
 
 #define DEW_CFG_HYSTERESIS      F("hysteresis")
 #define DEW_CFG_DEWDELTA        F("dewdelta")
@@ -35,13 +40,30 @@ void CDewPointSwitch::readConfigFrom(JsonObject & oCfg) {
 
 /// @brief Dispatch and update if needed
 void CDewPointSwitch::dispatch() {
-        float fIndoor   = this->SID.getDewPoint();
-        float fOutdoor  = this->SOD.getDewPoint();
-        
+    float fIndoor   = NAN;
+    float fOutdoor  = NAN;
+    if(pSID) fIndoor  = pSID->getDewPoint();
+    if(pSOD) fOutdoor = pSOD->getDewPoint();
+    
+    
     if(!isnan(fIndoor) && !isnan(fOutdoor)) {
-        DEBUG_INFO("DewPointSwitch infos:");
-        DEBUG_INFOS(" - temp     : %f \t- %f", SID.Status.TempC, SOD.Status.TempC);
-        DEBUG_INFOS(" - humidity : %f \t- %f", SID.Status.Humidity, SOD.Status.Humidity);
-        DEBUG_INFOS(" - dewpoint : %f \t- %f", fIndoor, fOutdoor);
+        if(m_oUpdateDelay.isDone()) {
+            bool bNewStatus = false;
+            if(m_fLastInternalDewPoint != fIndoor) {
+                m_fLastInternalDewPoint = fIndoor;
+                bNewStatus = true;
+            }
+            if(m_fLastExternalDewPoint != fOutdoor) {
+                m_fLastExternalDewPoint = fOutdoor;
+                bNewStatus = true;
+            }
+            if(bNewStatus) {
+                DEBUG_INFO("DewPointSwitch infos:");
+                DEBUG_INFOS(" - temp     : %f \t- %f", pSID->Status.TempC, pSOD->Status.TempC);
+                DEBUG_INFOS(" - humidity : %f \t- %f", pSID->Status.Humidity, pSOD->Status.Humidity);
+                DEBUG_INFOS(" - dewpoints: %f \t- %f", fIndoor, fOutdoor);
+            }
+            m_oUpdateDelay.restart();
+        }
     }
 }

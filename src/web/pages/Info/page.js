@@ -14,28 +14,35 @@ class CInfoPage extends CPageHandler {
        // this.Translator = new CTranslator();
     }
 
-    _createThermo(oBaseElement, oData) {
-        let oParent = CElement.asInstance(oBaseElement);
-        oParent.html(""); 
-        let oThermo = oParent.cce("div").ac("thermo");
-        let oGlas   = oThermo.cce("div").ac("thermo-glas");
-        let oLiquid = oGlas.cce("div").ac("thermo-liquid");
-        let oLabel  = oThermo.cce("div").ac("thermo-label");
-        if(oData.label) oLabel.setText(oData.label)
-        oLiquid.getBase().style.height = oData.height;
-        switch(oData.type) {
-            case "T" :  oLiquid.ac("thermo-temp");
-                        break;
-            case "H" : oLiquid.ac("thermo-humidity");
-                        break;
-        }
-        oGlas.ac("thermo-glas-active");
-        return(oThermo);
+    
+    // #region Update Status on a regular base
+    disposePage(pView, pApp) {
+        super.disposePage(pView, pApp);
+        this.RefreshTimer = clearInterval(this.RefreshTimer);
+        this.RefreshTimer = null;
     }
 
-    calcDisplayPercent(fData, fMin = -20, fRange = 60) {
-        return(((fData - fMin) * 100 / fRange).toFixed() + "%")
+    preparePage(pView, pApp) {
+        super.preparePage(pView, pApp);
+        // Set an interval to refresh the status infos every 5 seconds...
+        this.RefreshTimer = setInterval( this.refreshStatus.bind(this, pView, pApp), 5000);
     }
+    
+    refreshStatus(pView, pApp) {
+        pApp.requestActStatus();
+    }
+
+    /**
+     * Triggered, when a new status message is received from the web socket.
+     * @param {CView} pView 
+     * @param {CApp} pApp 
+     * @returns false to avoid loadPageConfig is called again (!) and the game starts again...
+     */
+    onUpdateStatusReceived(pView, pApp) {
+        this.loadPageConfig(pView, pApp);
+        return(false)
+    }
+    // #endregion
 
     /**
      * 
@@ -85,4 +92,26 @@ class CInfoPage extends CPageHandler {
         return(oStatus);
     }
 
+      _createThermo(oBaseElement, oData) {
+        let oParent = CElement.asInstance(oBaseElement);
+        oParent.html(""); 
+        let oThermo = oParent.cce("div").ac("thermo");
+        let oGlas   = oThermo.cce("div").ac("thermo-glas");
+        let oLiquid = oGlas.cce("div").ac("thermo-liquid");
+        let oLabel  = oThermo.cce("div").ac("thermo-label");
+        if(oData.label) oLabel.setText(oData.label)
+        oLiquid.getBase().style.height = oData.height;
+        switch(oData.type) {
+            case "T" :  oLiquid.ac("thermo-temp");
+                        break;
+            case "H" : oLiquid.ac("thermo-humidity");
+                        break;
+        }
+        oGlas.ac("thermo-glas-active");
+        return(oThermo);
+    }
+
+    calcDisplayPercent(fData, fMin = -20, fRange = 60) {
+        return(((fData - fMin) * 100 / fRange).toFixed() + "%")
+    }
 }

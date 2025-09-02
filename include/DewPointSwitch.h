@@ -3,6 +3,7 @@
 #include <ConfigHandler.h>
 #include <StatusHandler.h>
 #include <DewSensor.h>
+#include <SimpleDelay.h>
 
 
 struct AppConfig {
@@ -20,18 +21,21 @@ struct AppStatus {
 };
 
 class CDewPointSwitch : public IConfigHandler, public IStatusHandler{
+    private:
+        CSimpleDelay m_oUpdateDelay; // Update every second
+        float m_fLastInternalDewPoint = 0;
+        float m_fLastExternalDewPoint = 0;
     public:
         AppStatus Status;
         AppConfig Config;
-        // DewStatus *pIndoorStatus;
-        // DewStatus *pOutdoorStatus;
         
-        CDewSensor SID;
-        CDewSensor SOD;
+        CDewSensor *pSID;
+        CDewSensor *pSOD;
 
         CDewPointSwitch(CDewSensor &oSID,CDewSensor &oSOD) {
-            SID = oSID;
-            SOD = oSOD;
+            pSID = &oSID;
+            pSOD = &oSOD;
+            m_oUpdateDelay.start(1000);
         }
 
         void dispatch();

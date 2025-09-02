@@ -16,7 +16,7 @@ const APP_SETTINGS = {
         "prog_copy": "(c) 2025 LSC-Labs",
         "logLevel": 5,
         "ws": {
-            "recon": false,
+            "recon": true,
         },
         "latest": {
             "url": "https://api.github.com/repos/LSC-Labs/DewPoint-Monitor/releases/latest"
@@ -145,6 +145,23 @@ const APP_SETTINGS = {
                     "M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"
                 ]
             },
+            {
+                "name" : "ToggleOnSwitch",
+                "type" : "svg",
+                "class": "bi bi-toggle-on",
+                "data" : [
+                    "M5 3a5 5 0 0 0 0 10h6a5 5 0 0 0 0-10zm6 9a4 4 0 1 1 0-8 4 4 0 0 1 0 8"
+                ]
+            },
+            {
+                "name" : "ToggleOffSwitch",
+                "type" : "svg",
+                "class": "bi bi-toggle-off",
+                "data" : [
+                    "M11 4a4 4 0 0 1 0 8H8a5 5 0 0 0 2-4 5 5 0 0 0-2-4zm-6 8a4 4 0 1 1 0-8 4 4 0 0 1 0 8M0 8a5 5 0 0 0 5 5h6a5 5 0 0 0 0-10H5a5 5 0 0 0-5 5"
+                ]
+            },
+        
             {
                 "name" : "Thermo",
                 "type" : "svg",

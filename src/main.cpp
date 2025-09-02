@@ -77,6 +77,8 @@ void setup() {
   Appl.addStatusHandler("mqtt",     &oMqttController);
   
   Appl.MsgBus.registerEventReceiver(&oStatusLED);
+  Appl.MsgBus.registerEventReceiver(&oSensorID);
+  Appl.MsgBus.registerEventReceiver(&oSensorOD);
 
   oStatusLED.setColor(RGB_COLOR::BLUE);
 
@@ -103,26 +105,23 @@ void setup() {
   #ifdef DEBUGINFOS
     runDebugTests();
   #endif
+  DEBUG_INFOS(" ## -> Internet access to %d",oSensorOD.isInternetAvailable());
   DEBUG_FUNC_END();
 }
 
 void loop() {
-
+  
   // The WebServer is handling already the GET/POST/WebSocket requests 
   // so look for new messages to be processed on the websocket
   oWebSocket.dispatchMessageQueue();
 
-  // put your main code here, to run repeatedly:
-  // oSensorID.dispatch();
-  // oSensorOD.dispatch();
+  // Check the Dew Point - if needed, switch the relais
+  oDewPointSwitch.dispatch();
 
-  // Now the values are in place... decide
-  // oDewPointSwitch.dispatch();
+  // Update the status LED, depending on the current system status
   oStatusLED.updateLED();
 
   // Send the heartbeat, if configured
   oMqttController.publishHeartBeat();
-
-  delay(500);
 
 }

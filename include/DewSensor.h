@@ -3,7 +3,9 @@
 #include <Appl.h>
 #include <AppConfig.h>
 #include <EventHandler.h>
+#include <SimpleDelay.h>
 #include <DHT.h>
+
 
 struct DewStatus {
     float TempRawC      = NAN;
@@ -14,7 +16,8 @@ struct DewStatus {
     float Humidity      = NAN;
     float DewPoint      = NAN;
     int           SensorLocation = -1;
-    unsigned long LastCallMillis = 0;
+    unsigned long LastWeatherCallMillis = 0;
+    unsigned long LastSensorReadMillis  = 0;
 
 };
 
@@ -30,16 +33,20 @@ struct DewConfig {
     String strWeatherLatitude  = "48.251690";
     String strWeatherExclude;
     unsigned long nWeatherCallTimeout = 1000 * 60 * 2; // Call every 2 minutes to avoid the 1000 calls per day limit.
-
+#ifdef DEBUGINFOS
+    unsigned long nSensorReadTimeout = 20000; // Read the sensor in Debug Mode to avoid message flooding   
+#else
+    unsigned long nSensorReadTimeout = 2000; // Read the sensor every 2 seconds (if physical sensor is used)    
+#endif
 };
 
 class CDewSensor : public IMsgEventReceiver, public IConfigHandler,public IStatusHandler { //  : IConfigHandler, IStatusHandler {
     protected:
         DewConfig Config;
-        
-        DHT *pSensor = nullptr;
+        CSimpleDelay m_oUpdateDelay;      
+        DHT *pSensor = nullptr;     
+        bool m_bInternetAvailable = false;
         JsonDocument OpenWeatherData;
-        bool isInternetPossible = false;
 
     public:
         DewStatus Status;
@@ -51,19 +58,23 @@ class CDewSensor : public IMsgEventReceiver, public IConfigHandler,public IStatu
 
         void setup(int nPort, int nSensorType, int nLocation);
         
+        // Interface implementations
         void writeStatusTo(JsonObject & oObj) override;
         void readConfigFrom(JsonObject & oCfg) override;
         void writeConfigTo(JsonObject & oCfg, bool bHideCritical) override;
         int  receiveEvent(const void * pSender, int nMsg, const void * pData, int nType) override;
+
         float getTemperature(bool bAsFarenheit = false);
         float getHumidity();
-        float getDewPoint();
-        float calculateDewPoint(float fTemp, float fHum, bool bAsFarenheit = false);
-
+        float getDewPoint(bool bInFarenheit = false);
+        float calculateDewPoint(float fTemp, float fHum, bool bInFarenheit = false);
+ bool  isInternetAvailable();
     protected:
-        float adjustAndStoreTemperatures(float fRawTemp, bool bAsFarenheit = false);
+       
+        float adjustAndStoreTemperatures(float fRawTemp, bool bInFarenheit = false);
         float adjustAndStoreHumidity(float fRawHumi);
-        void  updateFromWeatherMapData();
+        void  updateFromPhysicalSensor();
+        void  updateFromOpenWeatherMap();
         
 };
 

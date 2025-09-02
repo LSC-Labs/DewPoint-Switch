@@ -9,7 +9,7 @@ node_modules
 bin/*
 test
 tmp/*
-src/web/dev
+src/web/apiV1
 src/web/test*
 dist/tmp
 dist/web
