@@ -9,7 +9,7 @@
 struct AppConfig {
     float minActivationLevelIndoor =  10.0; // Min internal temp to activate
     float minActivationLevelOutdoor = -10.0; // Min external temp to activate
-    float dewPointActivationDelta  =   5.0; // Dewpoint activation Delta between intern/extern
+    float dewPointActivationDelta  =  5.0; // Dewpoint activation Delta between intern/extern
     float activationHysteresis     =   1.0; // Hysteresis / Switch threshold temp
 };
 
@@ -35,7 +35,7 @@ class CDewPointSwitch : public IConfigHandler, public IStatusHandler{
         CDewPointSwitch(CDewSensor &oSID,CDewSensor &oSOD) {
             pSID = &oSID;
             pSOD = &oSOD;
-            m_oUpdateDelay.start(1000);
+            m_oUpdateDelay.start(3000);
         }
 
         void dispatch();
@@ -43,5 +43,8 @@ class CDewPointSwitch : public IConfigHandler, public IStatusHandler{
         void writeStatusTo(JsonObject & oData) override;
         void readConfigFrom(JsonObject & oCfg) override;
         void writeConfigTo(JsonObject & oCfg, bool bHideCritical) override;
+
+    protected:
+        bool setNewDewpointState(float fIndoor,float fOutdoor);
 
 };

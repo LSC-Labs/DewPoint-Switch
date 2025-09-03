@@ -79,6 +79,7 @@ void setup() {
   Appl.MsgBus.registerEventReceiver(&oStatusLED);
   Appl.MsgBus.registerEventReceiver(&oSensorID);
   Appl.MsgBus.registerEventReceiver(&oSensorOD);
+  Appl.MsgBus.registerEventReceiver(&oFanRelais);
 
   oStatusLED.setColor(RGB_COLOR::BLUE);
 

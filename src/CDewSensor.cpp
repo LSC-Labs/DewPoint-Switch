@@ -66,13 +66,10 @@ void CDewSensor::readConfigFrom(JsonObject & oCfg) {
     LSC::setValue(Config.strWeatherAppID,       oCfg[SENSOR_CFG_OPENWEATHER_KEY]);
     LSC::setValue(Config.strWeatherLongitude,   oCfg[SENSOR_CFG_OPENWEATHER_LONG]);
     LSC::setValue(Config.strWeatherLatitude,    oCfg[SENSOR_CFG_OPENWEATHER_LAT]);
-   DEBUG_INFOS(" ## -> Configured as %s sensor", Config.bIsPhysicalSensor ? "physical" : "open weather");
-    m_oUpdateDelay.printDiag();
+    DEBUG_INFOS(" ## -> Configured as %s sensor", Config.bIsPhysicalSensor ? "physical" : "open weather");
     m_oUpdateDelay.start( Config.bIsPhysicalSensor      ? 
                             Config.nSensorReadTimeout   :
                             Config.nWeatherCallTimeout  );
-    m_oUpdateDelay.printDiag();
-    
 }
 
 void CDewSensor::writeConfigTo(JsonObject & oCfg, bool bHideCritical) {
@@ -226,8 +223,6 @@ void  CDewSensor::updateFromOpenWeatherMap() {
                 Serial.println("[E] Exception in requesting data from Open weather");
             }
             Status.LastWeatherCallMillis = m_oUpdateDelay.restart();
-            
-            m_oUpdateDelay.printDiag();
         } else {
             DEBUG_INFOS(" -> Next internet call in %lu ms", m_oUpdateDelay.getRemaining());
         }

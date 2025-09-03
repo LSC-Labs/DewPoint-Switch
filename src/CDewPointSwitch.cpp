@@ -38,6 +38,22 @@ void CDewPointSwitch::readConfigFrom(JsonObject & oCfg) {
     LSC::setValue(&Config.minActivationLevelOutdoor, oCfg[DEW_CFG_MIN_EXTERN]);
 }
 
+bool CDewPointSwitch::setNewDewpointState(float fIndoor,float fOutdoor) {
+    bool bSetDone = false;
+    if(!isnan(fIndoor) && !isnan(fOutdoor)) {
+        if(m_fLastInternalDewPoint != fIndoor) {
+            m_fLastInternalDewPoint = fIndoor;
+            bSetDone = true;
+        }
+        if(m_fLastExternalDewPoint != fOutdoor) {
+            m_fLastExternalDewPoint = fOutdoor;
+            bSetDone = true;
+        }
+    }
+    return(bSetDone);
+}
+
+
 /// @brief Dispatch and update if needed
 void CDewPointSwitch::dispatch() {
     float fIndoor   = NAN;
@@ -45,25 +61,44 @@ void CDewPointSwitch::dispatch() {
     if(pSID) fIndoor  = pSID->getDewPoint();
     if(pSOD) fOutdoor = pSOD->getDewPoint();
     
-    
-    if(!isnan(fIndoor) && !isnan(fOutdoor)) {
-        if(m_oUpdateDelay.isDone()) {
-            bool bNewStatus = false;
-            if(m_fLastInternalDewPoint != fIndoor) {
-                m_fLastInternalDewPoint = fIndoor;
-                bNewStatus = true;
+    if(m_oUpdateDelay.isDone()) {
+        if(this->setNewDewpointState(fIndoor,fOutdoor)) {
+            /// -1 = do nothing, 0 = switch off, 1 = switch on
+            int nActivation = -1;    
+
+            // Indoor - Outdoor => positive = indoor hum is higher then outdoor...
+            float fDewPointDelta = fIndoor - fOutdoor;
+
+            // Check if deactivation point is reached... if not, power off...
+            if(fDewPointDelta < Config.dewPointActivationDelta) nActivation = 0;
+
+            // Or is the delta below the Threshold plus hysteresis ?
+            if((fDewPointDelta ) > (Config.dewPointActivationDelta + Config.activationHysteresis)) nActivation = 1;
+
+            // Min Temp thresholds forces off, if lower...
+            if(pSOD->getTemperature() < Config.minActivationLevelOutdoor) nActivation = 0;
+            if(pSID->getTemperature() < Config.minActivationLevelIndoor) nActivation = 0;
+
+            DEBUG_INFO("DewPointSwitch infos:");
+            DEBUG_INFO("============> Indoor\t  Outdoor");
+            DEBUG_INFOS(" - temp     : %f \t- %f", pSID->Status.TempC, pSOD->Status.TempC);
+            DEBUG_INFOS(" - humidity : %f \t- %f", pSID->Status.Humidity, pSOD->Status.Humidity);
+            DEBUG_INFOS(" - dewpoints: %f \t- %f", fIndoor, fOutdoor);
+            DEBUG_INFOS(" - actDelta : %f",Config.dewPointActivationDelta);
+            DEBUG_INFOS(" - hyster...: %f",Config.activationHysteresis);
+            DEBUG_INFOS(" - dew delta: %f", fDewPointDelta);
+            DEBUG_INFOS(" - activate : %d",nActivation);
+
+            if(nActivation > -1) {
+                Appl.MsgBus.sendEvent(
+                                this,
+                                nActivation == 1 ? MSG_FAN_ACTIVATE : MSG_FAN_DISABLE,
+                                nullptr,
+                                nActivation
+                            );
             }
-            if(m_fLastExternalDewPoint != fOutdoor) {
-                m_fLastExternalDewPoint = fOutdoor;
-                bNewStatus = true;
-            }
-            if(bNewStatus) {
-                DEBUG_INFO("DewPointSwitch infos:");
-                DEBUG_INFOS(" - temp     : %f \t- %f", pSID->Status.TempC, pSOD->Status.TempC);
-                DEBUG_INFOS(" - humidity : %f \t- %f", pSID->Status.Humidity, pSOD->Status.Humidity);
-                DEBUG_INFOS(" - dewpoints: %f \t- %f", fIndoor, fOutdoor);
-            }
-            m_oUpdateDelay.restart();
+            
         }
+        m_oUpdateDelay.restart();         
     }
 }
