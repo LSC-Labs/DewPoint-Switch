@@ -88,6 +88,7 @@ void CDewPointSwitch::dispatch() {
             DEBUG_INFOS(" - hyster...: %f",Config.activationHysteresis);
             DEBUG_INFOS(" - dew delta: %f", fDewPointDelta);
             DEBUG_INFOS(" - activate : %d",nActivation);
+            DEBUG_INFOS(" - timestamp: %s",Appl.getISODateTime());
 
             if(nActivation > -1) {
                 Appl.MsgBus.sendEvent(

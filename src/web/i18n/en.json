@@ -23,7 +23,57 @@
   "dialog": {
     "wait": {
       "title": "Please wait"
+    },
+    "save": {
+      "title": "Saving configuration",
+      "waitmsg": "Please wait until process is finished..."
     }
+  },
+  "Status": {
+    "legend": "Status of $(prog_name) Ver.: $(prog_ver)",
+    "panel": {
+      "device": "Device",
+      "network": "Network",
+      "mqtt": "Message broker",
+      "dewpoint": "Dew Point switch"
+    },
+    "hostname": "Systemname",
+    "uptime": "Uptime",
+    "flashSize": "Flash size",
+    "sketchSize": "Sketch size",
+    "flashUsage": "Mem usage",
+    "battery": "Battery",
+    "ssid": "SSID",
+    "rssi": "Signal strength",
+    "ip": "IP address",
+    "gateway": "Gateway address",
+    "netmask": "Network mask",
+    "dns": "DNS server",
+    "mac": "MAC address",
+    "enabled": "Enabled",
+    "connected": "Connected",
+    "lastConStart": "Last Connection start",
+    "lastConLost": "Last Connection lost",
+    "disconReason": "Disconnect reason",
+    "memOK": "$(sketch_size) Kb used of $(flash_available) Kb => $(flash_used_percent)%",
+    "memWarn": "Too less memory to update via OTA ! $(flash_used_percent)% used.",
+    "dewpoints": "Dew Points In / Out",
+    "fan": {
+      "active": "Fan active"
+    },
+    "sensor": {
+      "OD": "Sensor (Outdoor)",
+      "ID": "Sensor (Indoor)",
+      "dewpoint": "DP"
+    }
+  },
+  "Info": {
+    "legend": "Current measurements",
+    "intern": "Indoor",
+    "extern": "Outdoor",
+    "dewpoint": "Dew Point",
+    "temp": "Temperature",
+    "hum": "Humidity"
   },
   "System": {
     "title": "Restart or Reset",
@@ -151,22 +201,6 @@
     },
     "password": "Password"
   },
-  "SysCfg": {
-    "legend": "Backup & Restore",
-    "title": "Backup or Restore the device configuration. Be aware, the backup file is <b>NOT</b> encrypted.<br/> Store it on a safe place to avoid loosing your access credentials...",
-    "Backup": {
-      "title": "Backup Settings",
-      "desc": "Save the config to a backup file.",
-      "btn": "Backup Settings"
-    },
-    "Restore": {
-      "title": "Restore Settings",
-      "desc": "Click and choose your file from your local device to be restored.",
-      "btn": "Restore Settings",
-      "invalidFile": "The file you selected is not a valid backup file..."
-    },
-    "changePending": "You have uncommited changes, please click here to review and commit."
-  },
   "DewPoint": {
     "legend": "Dew Point Thresholds",
     "title": "Set the dew point sensor thresholds",
@@ -189,93 +223,6 @@
         "info": "Threshold for extern mimimum"
       }
     }
-  },
-  "DewSensors": {
-    "legend": "Dew Point Sensors",
-    "title": "Set and adjust the dew point sensors",
-    "adjust_t": {
-      "label": "Adjust temp",
-      "info": "Adjust the temperature"
-    },
-    "adjust_h": {
-      "label": "Adjust humidity",
-      "info": "Adjust the humidity"
-    },
-    "sensorType": {
-      "label": "Sensor type",
-      "info": "Select the sensor type you want to use."
-    },
-    "open": {
-      "name": "Open weather map",
-      "appID": {
-        "label": "App ID",
-        "info": "An open weather app id is needed, register and enter here..."
-      },
-      "long": {
-        "label": "Longitude",
-        "info": "Longitude of your location."
-      },
-      "lat": {
-        "label": "Latitude",
-        "info": "Latitude of your location"
-      }
-    },
-    "intern": {}
-  },
-  "Status": {
-    "legend": "Status of $(prog_name) Ver.: $(prog_ver)",
-    "panel": {
-      "device": "Device",
-      "network": "Network",
-      "mqtt": "Message broker",
-      "dewpoint": "Dew Point switch"
-    },
-    "hostname": "Systemname",
-    "uptime": "Uptime",
-    "flashSize": "Flash size",
-    "sketchSize": "Sketch size",
-    "flashUsage": "Mem usage",
-    "battery": "Battery",
-    "ssid": "SSID",
-    "rssi": "Signal strength",
-    "ip": "IP address",
-    "gateway": "Gateway address",
-    "netmask": "Network mask",
-    "dns": "DNS server",
-    "mac": "MAC address",
-    "enabled": "Enabled",
-    "connected": "Connected",
-    "lastConStart": "Last Connection start",
-    "lastConLost": "Last Connection lost",
-    "disconReason": "Disconnect reason",
-    "memOK": "$(sketch_size) Kb used of $(flash_available) Kb => $(flash_used_percent)%",
-    "memWarn": "Too less memory to update via OTA ! $(flash_used_percent)% used.",
-    "dewpoints": "Dew Points In / Out",
-    "fan": {
-      "active": "Fan active"
-    },
-    "sensor": {
-      "OD": "Sensor (Outdoor)",
-      "ID": "Sensor (Indoor)",
-      "dewpoint": "DP"
-    }
-  },
-  "Firmware": {
-    "legend": "Firmware update (current firmware: $(prog_ver))",
-    "title": "Firmware update is possible. Make a backup first, before updating to avoid loss of data.",
-    "latest": "Current available version online",
-    "install": "Select the version you want to install",
-    "downloadBtn": "Download",
-    "installBtn": "Install",
-    "noInternet": "It seems, there is no internet connection available or the firmware update server is down."
-  },
-  "Info": {
-    "legend": "Current measurements",
-    "intern": "Indoor",
-    "extern": "Outdoor",
-    "dewpoint": "Dew Point",
-    "temp": "Temperature",
-    "hum": "Humidity"
   },
   "Sensor": {
     "legend": "Dew Point Sensor",
@@ -300,7 +247,7 @@
         "label": "App ID",
         "info": "An open weather app id is needed, register and enter here..."
       },
-      "long": {
+      "lon": {
         "label": "Longitude",
         "info": "Longitude of your location."
       },
@@ -310,5 +257,30 @@
       }
     },
     "intern": {}
+  },
+  "SysCfg": {
+    "legend": "Backup & Restore",
+    "title": "Backup or Restore the device configuration. Be aware, the backup file is <b>NOT</b> encrypted.<br/> Store it on a safe place to avoid loosing your access credentials...",
+    "Backup": {
+      "title": "Backup Settings",
+      "desc": "Save the config to a backup file.",
+      "btn": "Backup Settings"
+    },
+    "Restore": {
+      "title": "Restore Settings",
+      "desc": "Click and choose your file from your local device to be restored.",
+      "btn": "Restore Settings",
+      "invalidFile": "The file you selected is not a valid backup file..."
+    },
+    "changePending": "You have uncommited changes, please click here to review and commit."
+  },
+  "Firmware": {
+    "legend": "Firmware update (current firmware: $(prog_ver))",
+    "title": "Firmware update is possible. Make a backup first, before updating to avoid loss of data.",
+    "latest": "Current available version online",
+    "install": "Select the version you want to install",
+    "downloadBtn": "Download",
+    "installBtn": "Install",
+    "noInternet": "It seems, there is no internet connection available or the firmware update server is down."
   }
 }

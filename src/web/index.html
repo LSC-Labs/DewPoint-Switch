@@ -3,7 +3,7 @@
 <head> 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LSC-Labs Dew Point</title>
+  <title>LSC-Labs ESPRuntime</title>
 
   <!--
     Include the runtime stylesheets,
@@ -30,7 +30,8 @@
     <nav id="sidebar">
       <div class="nav-header">
           <span class="logo">LSC Labs</span>
-          <button id="sidebarHide" data-icon="Arrows"></button>
+          <button id="sidebarHide" onclick="SB.show(false)" data-icon="Arrows">
+          </button>
       </div>
       <ul> 
         <!-- menu content will be inserted by defaults.js and page definitions -->
@@ -46,7 +47,7 @@
       <!-- in the mainView there is a info bar on the top -->
       <div id="infoBar">
         <div>
-          <button type="button" id="sidebarShow" data-icon="Arrows" data-icon-attr="rotate=130deg; height=16px; width=16px">
+          <button type="button" id="sidebarShow" onclick="SB.show(true)" data-icon="Arrows" data-icon-attr="rotate=130deg; height=16px; width=16px">
           </button>
         </div>
         <div class="pull-right" id="statusInfo" style="display: none;">
@@ -113,7 +114,7 @@
       <div class="dialogHeader">
         <div class="modal-title text-center" data-i18n="dialog.wait.title"></div>
       </div>
-      <div class="dialogBody"></div>
+      <div class="dialogBody waitBody"></div>
       <div class="progressBar"><div class="progressStatus"></div>
       
     </dialog>

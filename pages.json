@@ -15,7 +15,9 @@
     },
     
     "touchAfterPagesCompiled": "src/WebRoutes.cpp",   
+
     "usePages": [
+        "@lib/PLibESPV1/src/web/i18n",
         "lib/PLibESPV1/src/web/pages/_Defaults",
         "src/web/pages/Status",
         "src/web/pages/Info",

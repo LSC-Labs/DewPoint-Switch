@@ -1,0 +1,213 @@
+#ifndef DEBUG_LSC_DISPLAY_PAGES
+    #undef DEBUGINFOS
+#endif
+
+#include <DisplayPages.h>
+#include <DevelopmentHelper.h>
+#include <ProgVersion.h>
+
+void CDisplayTestPage::show(CDisplay *pDisplay) {
+  DEBUG_FUNC_START();
+    pDisplay->setTextSize(1);
+    pDisplay->setTextColor(SH110X_WHITE);
+    pDisplay->setCursor(0, 0);
+
+    for (uint8_t i = 0; i < 168; i++) {
+        if (i == '\n') continue;
+        pDisplay->write(i);
+        if ((i > 0) && (i % 21 == 0))
+            pDisplay->println();
+    }
+    pDisplay->display();
+    this->isActive = true;
+    DEBUG_FUNC_END();
+}
+
+void CDisplayLogoPage::show(CDisplay *pDisplay) {
+    DEBUG_FUNC_START();
+    if(!this->isActive && pDisplay) {
+        DEBUG_INFO("Activating LOGO display...");
+        pDisplay->setTextColor(SH110X_WHITE);
+        pDisplay->setCursor(0, 0);
+        pDisplay->setTextSize(2);
+        pDisplay->printlnCentered("Dew Switch");
+        pDisplay->setTextSize(1);
+        pDisplay->println("");
+        #ifdef DEBUGVERSION
+          pDisplay->printlnCentered("Version " PROG_VERSION "-D");
+        #else
+          pDisplay->printlnCentered("Version " PROG_VERSION);
+        #endif
+        pDisplay->println("");
+        pDisplay->printlnCentered("(c) 2025 LSC-Labs");
+        pDisplay->printlnCentered("P. Liebl");
+        
+        pDisplay->display();
+        this->isActive = true;
+    }
+    DEBUG_FUNC_END();
+}
+
+void CDisplayDewPointPage::show(CDisplay *pDisplay) {
+    DEBUG_FUNC_START();
+    if(pDisplay) {
+        DEBUG_INFO("Activating DewPoint display...");
+        pDisplay->clearDisplay();
+        drawPageHeader(pDisplay);
+        int16_t nMiddle = pDisplay->width() / 2;
+        int16_t nOffsetX = 6;
+        int16_t nOffsetY = pDisplay->getCursorY() + 2;
+        pDisplay->drawLine(nMiddle,pDisplay->getCursorY(),nMiddle,pDisplay->height(),SCREEN_TEXT_WHITE);
+        if(Status.pSI && Status.pSO) {
+            char szBuffer[80];
+            pDisplay->printAt(nOffsetX +6 ,nOffsetY,"Indoor");
+            pDisplay->printAt(nMiddle +6 + nOffsetX,nOffsetY,"Outdoor");
+            nOffsetY += 12;
+
+            pDisplay->setTextSize(1,2);
+            pDisplay->setCursor(0,nOffsetY);
+            // Show indoor / outdoor Dew Points
+            sprintfSensorDewPoint(szBuffer,Status.pSI);
+            pDisplay->printCentered(szBuffer,0,nMiddle);
+
+            sprintfSensorDewPoint(szBuffer,Status.pSO);
+            pDisplay->printCentered(szBuffer,nMiddle);
+ 
+            nOffsetY += 22; 
+            pDisplay->setTextSize(1);
+            pDisplay->setCursor(nOffsetX,nOffsetY);
+            printSensorTemperature(pDisplay,Status.pSI);
+            pDisplay->setCursor(nMiddle + nOffsetX,nOffsetY);
+            printSensorTemperature(pDisplay,Status.pSO);
+
+            nOffsetY += 8;
+            nOffsetX += 12;
+            pDisplay->setCursor(nOffsetX,nOffsetY);
+            sprintfSensorHumidity(szBuffer,Status.pSI);
+            pDisplay->printCentered(szBuffer,0,nMiddle);
+            sprintfSensorHumidity(szBuffer,Status.pSO);
+            pDisplay->printCentered(szBuffer,nMiddle);
+
+            /*
+            printSensorHumidity(pDisplay,Status.pSI);
+            pDisplay->setCursor(nMiddle + nOffsetX,nOffsetY);
+            printSensorHumidity(pDisplay,Status.pSO);
+            */
+        }
+        pDisplay->display();
+        this->isActive = true;
+    }
+    DEBUG_FUNC_END();
+      
+}
+
+void CDisplayTempPage::show(CDisplay *pDisplay) {
+    DEBUG_FUNC_START();
+    if(pDisplay) {
+        DEBUG_INFO("Activating DewPoint display...");
+        pDisplay->clearDisplay();
+        drawPageHeader(pDisplay);
+        int16_t nMiddle = pDisplay->width() / 2;
+        int16_t nOffsetX = 6;
+        int16_t nOffsetY = pDisplay->getCursorY() + 2;
+        pDisplay->drawLine(nMiddle,pDisplay->getCursorY(),nMiddle,pDisplay->height(),SCREEN_TEXT_WHITE);
+        if(Status.pSI && Status.pSO) {
+            char szBuffer[80];
+            pDisplay->printAt(nOffsetX +6 ,nOffsetY,"Indoor");
+            pDisplay->printAt(nMiddle +6 + nOffsetX,nOffsetY,"Outdoor");
+            nOffsetY += 12;
+
+            pDisplay->setTextSize(1,2);
+            pDisplay->setCursor(0,nOffsetY);
+            // Show indoor / outdoor Dew Points
+            sprintfSensorTemp(szBuffer,Status.pSI);
+            pDisplay->printCentered(szBuffer,0,nMiddle);
+
+            sprintfSensorTemp(szBuffer,Status.pSO);
+            pDisplay->printCentered(szBuffer,nMiddle);
+ 
+            nOffsetY += 22; 
+            pDisplay->setTextSize(1);
+            pDisplay->setCursor(nOffsetX,nOffsetY);
+            strcpy(szBuffer,"DP ");
+            sprintfSensorDewPoint(&szBuffer[3],Status.pSI);
+            pDisplay->printCentered(szBuffer,0,nMiddle);
+            sprintfSensorDewPoint(&szBuffer[3],Status.pSO);
+            pDisplay->printCentered(szBuffer,nMiddle);
+
+            nOffsetY += 8;
+            nOffsetX += 12;
+            pDisplay->setCursor(nOffsetX,nOffsetY);
+            sprintfSensorHumidity(szBuffer,Status.pSI);
+            pDisplay->printCentered(szBuffer,0,nMiddle);
+            sprintfSensorHumidity(szBuffer,Status.pSO);
+            pDisplay->printCentered(szBuffer,nMiddle);
+
+            /*
+            printSensorHumidity(pDisplay,Status.pSI);
+            pDisplay->setCursor(nMiddle + nOffsetX,nOffsetY);
+            printSensorHumidity(pDisplay,Status.pSO);
+            */
+        }
+        pDisplay->display();
+        this->isActive = true;
+    }
+    DEBUG_FUNC_END();
+      
+}
+
+void CDisplayHumidityPage::show(CDisplay *pDisplay) {
+    DEBUG_FUNC_START();
+    if(pDisplay) {
+        DEBUG_INFO("Activating DewPoint display...");
+        pDisplay->clearDisplay();
+        drawPageHeader(pDisplay);
+        int16_t nMiddle = pDisplay->width() / 2;
+        int16_t nOffsetX = 6;
+        int16_t nOffsetY = pDisplay->getCursorY() + 2;
+        pDisplay->drawLine(nMiddle,pDisplay->getCursorY(),nMiddle,pDisplay->height(),SCREEN_TEXT_WHITE);
+        if(Status.pSI && Status.pSO) {
+            char szBuffer[80];
+            pDisplay->printAt(nOffsetX +6 ,nOffsetY,"Indoor");
+            pDisplay->printAt(nMiddle +6 + nOffsetX,nOffsetY,"Outdoor");
+            nOffsetY += 12;
+
+            pDisplay->setTextSize(1,2);
+            pDisplay->setCursor(0,nOffsetY);
+            // Show indoor / outdoor Dew Points
+            sprintfSensorHumidity(szBuffer,Status.pSI);
+            pDisplay->printCentered(szBuffer,0,nMiddle);
+
+            sprintfSensorHumidity(szBuffer,Status.pSO);
+            pDisplay->printCentered(szBuffer,nMiddle);
+ 
+            nOffsetY += 22; 
+            pDisplay->setTextSize(1);
+            pDisplay->setCursor(nOffsetX,nOffsetY);
+            strcpy(szBuffer,"DP ");
+            sprintfSensorDewPoint(&szBuffer[3],Status.pSI);
+            pDisplay->printCentered(szBuffer,0,nMiddle);
+            sprintfSensorDewPoint(&szBuffer[3],Status.pSO);
+            pDisplay->printCentered(szBuffer,nMiddle);
+
+            nOffsetY += 8;
+            nOffsetX += 12;
+            pDisplay->setCursor(nOffsetX,nOffsetY);
+            sprintfSensorTemp(szBuffer,Status.pSI);
+            pDisplay->printCentered(szBuffer,0,nMiddle);
+            sprintfSensorTemp(szBuffer,Status.pSO);
+            pDisplay->printCentered(szBuffer,nMiddle);
+
+            /*
+            printSensorHumidity(pDisplay,Status.pSI);
+            pDisplay->setCursor(nMiddle + nOffsetX,nOffsetY);
+            printSensorHumidity(pDisplay,Status.pSO);
+            */
+        }
+        pDisplay->display();
+        this->isActive = true;
+    }
+    DEBUG_FUNC_END();
+      
+}
+

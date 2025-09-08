@@ -17,7 +17,7 @@
     "url": "git+https://github.com/lsc-labs/DewPoint-Switch.git"
   },
   "scripts": {
-    "update-WebPages": "npm run build-Pages && npm run compile-Pages",
+    "create-WebPages": "npm run build-Pages && npm run compile-Pages",
     "css-compile": "sass       --style expanded --source-map --embed-sources --no-error-css scss/:src/web/css/",
     "sync-Files": "gulp syncFiles",
     "watch-WebPages": "watchlist src/web/pages lib/PLibESPV1/src/web/pages -- npm run update-Pages",

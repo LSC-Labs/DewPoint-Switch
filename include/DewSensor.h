@@ -27,7 +27,7 @@ struct DewConfig {
     float adjustHumidity = 0.0;     // Humidity adjustment
     /** only needed if open weather map is used **/
     // String strWeatherURL = "https://api.openweathermap.org/data/3.0/onecall";
-    String strWeatherURL = "https://api.openweathermap.org/data/2.5/weather";
+    String strWeatherURL = "http://api.openweathermap.org/data/2.5/weather";
     String strWeatherAppID = "36cfc67cc00883f082b22e216d6bfb6b";
     String strWeatherLongitude = "11.553641";
     String strWeatherLatitude  = "48.251690";
@@ -36,14 +36,15 @@ struct DewConfig {
 #ifdef DEBUGINFOS
     unsigned long nSensorReadTimeout = 20000; // Read the sensor in Debug Mode to avoid message flooding   
 #else
-    unsigned long nSensorReadTimeout = 2000; // Read the sensor every 2 seconds (if physical sensor is used)    
+    unsigned long nSensorReadTimeout = 10000; // Read the sensor every 10 seconds (if physical sensor is used)    
 #endif
 };
 
 class CDewSensor : public IMsgEventReceiver, public IConfigHandler,public IStatusHandler { //  : IConfigHandler, IStatusHandler {
     protected:
         DewConfig Config;
-        CSimpleDelay m_oUpdateDelay;      
+        CSimpleDelay m_oSensorReadDelay;      
+        CSimpleDelay m_oUpdateDelay; // Update delay overall...
         DHT *pSensor = nullptr;     
         bool m_bInternetAvailable = false;
         JsonDocument OpenWeatherData;
@@ -68,7 +69,7 @@ class CDewSensor : public IMsgEventReceiver, public IConfigHandler,public IStatu
         float getHumidity();
         float getDewPoint(bool bInFarenheit = false);
         float calculateDewPoint(float fTemp, float fHum, bool bInFarenheit = false);
- bool  isInternetAvailable();
+        bool  isInternetAvailable();
     protected:
        
         float adjustAndStoreTemperatures(float fRawTemp, bool bInFarenheit = false);

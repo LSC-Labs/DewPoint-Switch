@@ -99,6 +99,7 @@ function joinHtmlPage(strPagePath) {
 let tPageHandlerRegistration = [];
 
 function joinScriptPage(strPagePath) {
+
     let strInput = path.join(strPagePath,"page.js");
     if(fs.existsSync(strInput)) {
         let strOut = getScriptTargetName();
@@ -154,27 +155,27 @@ function getJsonFromFile(strFile) {
 }
 
 function joinLanguages(strPagePath) {
-    let strInputPath = path.join(strPagePath,"i18n"); {
-        let oRX = new RegExp("^[a-z]{2}\.json$")
-        if(fs.existsSync(strInputPath)) {
-            fs.readdirSync(strInputPath).forEach((strFile) => {
-                let oRX = new RegExp("^[a-z]{2}\.json$");
-                if(oRX.test(strFile)) {
-                    console.log("   -> joining language : " + strFile);
-                    // Join the language....
-                    let strTargetFile = path.join(getLanguagePath(),strFile);
-                    // remember existing data....
-                    let oTarget = getJsonFromFile(strTargetFile);
-                    let strInputFile = path.join(strInputPath, strFile);
-                    let oInput = getJsonFromFile(strInputFile);
-                    // merge the data and write back...
-                    let oResult = {...oTarget,...oInput}
-                    fs.writeFileSync(strTargetFile,JSON.stringify(oResult,null,2));
+    let strInputPath = path.join(strPagePath,"i18n"); 
+    let oRX = new RegExp("^[a-z]{2}\.json$")
+    if(fs.existsSync(strInputPath)) {
+        fs.readdirSync(strInputPath).forEach((strFile) => {
+            let oRX = new RegExp("^[a-z]{2}\.json$");
+            if(oRX.test(strFile)) {
+                console.log("   -> joining language : " + strFile);
+                // Join the language....
+                let strTargetFile = path.join(getLanguagePath(),strFile);
+                // remember existing data....
+                let oTarget = getJsonFromFile(strTargetFile);
+                let strInputFile = path.join(strInputPath, strFile);
+                let oInput = getJsonFromFile(strInputFile);
+                // merge the data and write back...
+                let oResult = {...oTarget,...oInput}
+                fs.writeFileSync(strTargetFile,JSON.stringify(oResult,null,2));
 
-                    Status.numLanguages++;
-                }
-            });
-        }
+                Status.numLanguages++;
+            }
+        });
+        
     }
 }
 // #endregion

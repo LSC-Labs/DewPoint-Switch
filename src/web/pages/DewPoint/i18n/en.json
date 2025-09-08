@@ -46,7 +46,7 @@
                 "label" : "App ID",
                 "info" : "An open weather app id is needed, register and enter here..."
             },
-            "long" : {
+            "lon" : {
                 "label" : "Longitude",
                 "info" : "Longitude of your location."
             },
