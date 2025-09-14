@@ -15,7 +15,7 @@ class CDisplayTestPage : public CDisplayPage {
 
 class CDisplayLogoPage : public CDisplayPage {
     public:
-        CDisplayLogoPage(const char *pszName) : CDisplayPage(pszName,PageType::SETUP) {}
+        CDisplayLogoPage(const char *pszName) : CDisplayPage(pszName,PageType::SETUP,10000) {}
         virtual void show(CDisplay *pDisplay) override;
     
 };

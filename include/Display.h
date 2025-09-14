@@ -27,7 +27,7 @@ class CDisplay :public IConfigHandler, public IMsgEventReceiver, public DISPLAY_
         CSimpleDelay m_oRotateDelay;
         CSimpleDelay m_oPowerOffDelay;
         CSimpleDelay m_oPageRefreshDelay;
-        bool m_bNoRotateClearedActive = false;
+        bool m_bPowerOffIsActive = false;
 
     public: 
         CDisplay();
@@ -38,11 +38,11 @@ class CDisplay :public IConfigHandler, public IMsgEventReceiver, public DISPLAY_
         IDisplayPage * findPage(String &strName);
         IDisplayPage * findPage(const char *pszName);
         IDisplayPage * findNextPage(PageType eType);
+        bool activatePage(IDisplayPage * pPage);
         bool activatePage(const char *pszName);
         bool activatePage(String &strName);
         bool activateNextPage(PageType eType);
         void hideCurrentPage();
-        void showCurrentPage();
         void refreshCurrentPage(bool bForce = false);
 
         void readConfigFrom(JsonObject & oCfg) override;
@@ -50,9 +50,10 @@ class CDisplay :public IConfigHandler, public IMsgEventReceiver, public DISPLAY_
         int receiveEvent(const void * pSender, int nMsgType, const void * pMessage, int nClass) override;
 
         int  setCenteredTextCursor(const char *pszText, int nStart = -1, int nEnd = -1);
-        int  printCentered(const char * pszText, int nStart = -1, int nEnd = -1);
-        int  printlnCentered(const char * pszText, int nStart = -1, int nEnd = -1);
-        int  printRightAligned(const char * pszText);
+        int  setRightAlignedTextCursor(const char *pszText, int nEnd = -1);
+        int  printCentered(const char * pszText, int nStart = -1, int nEndPos = -1);
+        int  printlnCentered(const char * pszText, int nStart = -1, int nEndPos = -1);
+        int  printRightAligned(const char * pszText,int nEndPos = -1);
         void printAt(uint16_t nX, uint16_t nY, const char *pszText);
 
     protected:

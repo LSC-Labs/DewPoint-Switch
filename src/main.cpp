@@ -15,6 +15,7 @@
 #include <Display.h>
 #include <DisplayPages.h>
 #include <NTPHandler.h>
+#include <Button.h>
 /*
 #include <Adafruit_SH110X.h>
 #include <Adafruit_GFX.h>
@@ -27,14 +28,15 @@ CMQTTController oMqttController;
 CWebSocket      oWebSocket("/ws");
 CWebServer      oWebServer(80);
 
-CDewSensor      oSensorID(D3,DHT11,SENSOR_INDOOR);
+CDewSensor      oSensorID(D4,DHT11,SENSOR_INDOOR);
+// CDewSensor      oSensorOD(D3,DHT11,SENSOR_OUTDOOR);
 CDewSensor      oSensorOD(-1,USE_OPEN_WEATHER,SENSOR_OUTDOOR);
 
 CDewPointSwitch oDewPointSwitch(oSensorID,oSensorOD);
-
-CSysStatusLed   oStatusLED(D5,D6,D7,false);
-CFanRelais      oFanRelais(D4);
-CDisplay    oDisplay;
+CButton         oBtn(D8,true);
+CSysStatusLed   oStatusLED(D5,D6,D0,false);
+CFanRelais      oFanRelais(D7);
+CDisplay        oDisplay;
 CNTPHandler     oNTP;
 
 /*
@@ -263,7 +265,12 @@ void runDebugTests() {
   Appl.Log.logInfo("Tests finished...");
   // Test of RGB LED
   // oStatusLED.runTests();
-   
+  
+  DEBUG_INFO("Testing Fan...");
+  oFanRelais.switchOn();
+  delay(1000);
+  oFanRelais.switchOff();
+  oStatusLED.runTests();
 }
 #endif
 
@@ -274,27 +281,14 @@ void registerDisplayPages() {
   oDisplay.registerPage(new CDisplayHumidityPage("HumidityPage"));
 }
 
-
-
-
-void setup() {
-  Serial.begin(115200);
-  DEBUG_FUNC_START();
-  DEBUG_INFOS("\nInitializing application: \"%s\" Version: %s\n",APP_NAME,APP_VERSION);
-  registerDisplayPages();
-  oDisplay.init();
-
-#ifdef DEVTESTS
-  setupTest();
-#endif
-
-
-  Appl.addConfigHandler("dewswitch",&oDewPointSwitch);
+void registerModules() {
+Appl.addConfigHandler("dewswitch",&oDewPointSwitch);
   Appl.addConfigHandler("wifi",     &oWiFiController);
   Appl.addConfigHandler("mqtt",     &oMqttController);
   Appl.addConfigHandler("sensorID", &oSensorID);
   Appl.addConfigHandler("sensorOD", &oSensorOD);
   Appl.addConfigHandler("ntp",      &oNTP);
+  Appl.addConfigHandler("display",  &oDisplay);
   
 
   Appl.addStatusHandler("dewswitch",&oDewPointSwitch);
@@ -310,7 +304,25 @@ void setup() {
   Appl.MsgBus.registerEventReceiver(&oSensorOD);
   Appl.MsgBus.registerEventReceiver(&oFanRelais);
   Appl.MsgBus.registerEventReceiver(&oNTP);
+}
 
+
+
+void setup() {
+  Serial.begin(115200);
+  DEBUG_FUNC_START();
+  DEBUG_INFOS("\nInitializing application: \"%s\" Version: %s\n",APP_NAME,APP_VERSION);
+  registerDisplayPages();
+  oDisplay.init();
+  // oBtn.setup(D7,true);
+
+#ifdef DEVTESTS
+  setupTest();
+#endif
+  registerModules();
+
+  
+  
   oStatusLED.setColor(RGB_COLOR::BLUE);
 
   Appl.init(APP_NAME,APP_VERSION);
@@ -336,6 +348,7 @@ void setup() {
   #ifdef DEBUGINFOS
     runDebugTests();
   #endif
+  oBtn.startMonitoring();
   DEBUG_FUNC_END();
 }
 

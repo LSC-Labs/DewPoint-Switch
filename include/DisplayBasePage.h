@@ -12,11 +12,14 @@ struct DisplayStatus {
     bool isInAccessPointMode    = false;
     bool isInStationMode        = false;
     bool isWiFiConnected        = false;
+    bool isFanActive            = false;
 };
 
 class CDisplayBasePage : public CDisplayPage, public IMsgEventReceiver {
     protected:
         DisplayStatus Status;
+        CSimpleDelay m_oWiFiRefresh;
+        int m_nRSSI = 0;
 
     public:
         CDisplayBasePage(const char * pszName, PageType eType) : CDisplayPage(pszName,eType){init();};

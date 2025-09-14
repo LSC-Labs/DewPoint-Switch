@@ -8,9 +8,15 @@
 #include <Adafruit_GFX.h>
 #include <Display.h>
 #include <DisplayPage.h>
+#include <LSCUtils.h>
+#include <JsonHelper.h>
 
-
-
+#define CFG_ALWAYS_ON       F("alwaysOn")
+#define CFG_STATIC_PAGE     F("staticPage")
+#define CFG_ROTATE          F("rotate")
+#define CFG_POWER_OFF_TIME  F("powerOff")
+#define CFG_ROTATE_TIME     F("rotateTime")
+  
 class CDisplayCursor {
     public:
         uint16_t X = 0;
@@ -67,10 +73,19 @@ int CDisplay::receiveEvent(const void * pSender, int nMsgType, const void * pMes
 } 
 
 void CDisplay::readConfigFrom(JsonObject & oCfg) {
-
+    LSC::setValue(&Config.AlwaysOn,          oCfg[CFG_ALWAYS_ON]);
+    LSC::setValue(Config.StaticDisplayName,  oCfg[CFG_STATIC_PAGE]);
+    LSC::setValue(&Config.RotateDisplays,    oCfg[CFG_ROTATE]);
+    LSC::setValue(&Config.RotateTime,        oCfg[CFG_ROTATE_TIME]);
+    LSC::setValue(&Config.PowerOffTime,      oCfg[CFG_POWER_OFF_TIME]);
 };
+
 void CDisplay::writeConfigTo(JsonObject & oCfg, bool bHideCritical) {
-    
+    oCfg[CFG_ALWAYS_ON]         = Config.AlwaysOn;
+    oCfg[CFG_STATIC_PAGE]       = Config.StaticDisplayName;
+    oCfg[CFG_ROTATE]            = Config.RotateDisplays;
+    oCfg[CFG_ROTATE_TIME]       = Config.RotateTime;
+    oCfg[CFG_POWER_OFF_TIME]    = Config.PowerOffTime;
 };
 
 void CDisplay::printAt(uint16_t nX, uint16_t nY, const char *pszString) {
@@ -99,6 +114,7 @@ int CDisplay::setCenteredTextCursor(const char * pszText, int nStart, int nEnd) 
     return(getCursorY());
 }
 
+
 int CDisplay::printlnCentered(const char * pszText, int nStart, int nEnd) {
     DEBUG_FUNC_START_PARMS("%s",NULL_POINTER_STRING(pszText));
     if(pszText) {
@@ -119,20 +135,32 @@ int CDisplay::printCentered(const char * pszText, int nStart, int nEnd) {
     return(getCursorY());
 }
 
-int CDisplay::printRightAligned(const char * pszText) {
-    DEBUG_FUNC_START();
-    if(pszText) {
-        int16_t  nPosY = getCursorY();
-        int16_t  nX,nY;
-        uint16_t nWidth,nHeight;
+/**
+ * Set the cursor to a right alignable text...
+ * @param nEnd if -1, the screen width, otherwise, this is the reference point to align...
+ * @return the new x cursor postion set
+ */
+int CDisplay::setRightAlignedTextCursor(const char * pszText, int nEnd) {
+    DEBUG_FUNC_START_PARMS("%s,%d",NULL_POINTER_STRING(pszText),nEnd);
+    int16_t  nPosY = getCursorY();
+    int16_t  nX,nY = 0;
+    uint16_t nTextWidth,nTextHeight;
 
-        getTextBounds(pszText,0,nPosY,&nX,&nY,&nWidth,&nHeight);
-        int16_t nDisplayWidth = width();
-        nX = (nDisplayWidth - nWidth);
+    if(pszText) {
+        getTextBounds(pszText,0,nPosY,&nX,&nY,&nTextWidth,&nTextHeight);
+        int16_t nRangeWidth = nEnd < 0 ? width() : nEnd;
+        nX = (nRangeWidth - nTextWidth);
         if(nX < 0) nX = 0;
         setCursor(nX,nY);
-        char szBuffer[strlen(pszText) + 1];
-        sprintf(szBuffer,"%*s", strlen(pszText), "");
+    } 
+    DEBUG_FUNC_END_PARMS("%d",nX);
+    return(nX);
+}
+
+int CDisplay::printRightAligned(const char * pszText, int nEndPos) {
+    DEBUG_FUNC_START();
+    if(pszText) {
+        setRightAlignedTextCursor(pszText,nEndPos);
         println(pszText);
     }
     DEBUG_FUNC_END();
@@ -154,14 +182,19 @@ void CDisplay::hideCurrentPage() {
     if(m_pCurrentPage != nullptr) m_pCurrentPage->hide(this);
 }
 
-void CDisplay::showCurrentPage() {
-    DEBUG_FUNC_START();
+/**
+ * Refresh the content of the page, respecting the refresh timer....
+ */
+void CDisplay::refreshCurrentPage(bool bForce) {
     if(m_pCurrentPage != nullptr) {
-        m_pCurrentPage->show(this);
-        m_oPageRefreshDelay.restart();
+        if(bForce || m_oPageRefreshDelay.isDone()) {
+            m_pCurrentPage->show(this);
+            m_oPageRefreshDelay.restart();
+            DEBUG_INFOS(" - next page refresh in : %lu ms",m_oPageRefreshDelay.getRemaining());
+        }
     }
-    DEBUG_FUNC_END();
 }
+       
 
 IDisplayPage * CDisplay::findPage(const char *pszName) {
     DEBUG_FUNC_START_PARMS("%s",NULL_POINTER_STRING(pszName));
@@ -218,66 +251,73 @@ bool CDisplay::activatePage(String &strName) {
     return(activatePage(strName.c_str()));
 }
 
+
+/// @brief activate page and show the content
+/// @param pPage pointer to a page instance
+/// @return true, if page was activated and shown, false, if pPage is null, or page was already active...
+bool CDisplay::activatePage(IDisplayPage * pPage) {
+    bool bIsActivated = false;
+    if(pPage != nullptr) {
+        if(pPage != m_pCurrentPage ){
+            hideCurrentPage();
+            m_pCurrentPage = pPage;
+            m_oPageRefreshDelay.start(m_pCurrentPage->getRefreshTime());
+            m_pCurrentPage->show(this);
+            bIsActivated = true;
+        } 
+    }
+    return(bIsActivated);
+}
+
+/// @brief activate a page by name
+/// @param pszName Name of page that should be activated...
+/// @return true, if the page was found and is active.
 bool CDisplay::activatePage(const char *pszName) {
     DEBUG_FUNC_START_PARMS("%s",pszName);
     bool bIsActivated = m_strCurrentPageName == pszName;
     if(!bIsActivated) {
         IDisplayPage *pNewPage = findPage(pszName);
         if(pNewPage != nullptr) {
-            if(pNewPage != m_pCurrentPage ){
-                hideCurrentPage();
-                m_pCurrentPage = pNewPage;
-                bIsActivated = true;
-            } else {
-                bIsActivated = true;
-            }
+            bIsActivated = activatePage(pNewPage);
         }
-        showCurrentPage();
     }
-    refreshCurrentPage();
+    // force refresh...
     DEBUG_FUNC_END_PARMS("%d",bIsActivated);
     return(bIsActivated);
 }
 
+/// @brief activates the next page of type in queue
+/// @param eType type of page that will be respected.
+/// @return  true, if the next page was found and could be activated
 bool CDisplay::activateNextPage(PageType eType) {
-    bool bActivated = false;
-    IDisplayPage *pNextPage = findNextPage(eType);
-    if(pNextPage != nullptr) {
-        if(pNextPage != m_pCurrentPage) {
-            hideCurrentPage();
-            m_pCurrentPage = pNextPage;
-            showCurrentPage();
-            bActivated = true;
-        }
-    }
-    refreshCurrentPage();
-    return(bActivated);
+    return(activatePage(findNextPage(eType)));
 }
 
-void CDisplay::refreshCurrentPage(bool bForce) {
-    if(bForce || m_oPageRefreshDelay.isDone()) {
-        showCurrentPage();
-        m_oPageRefreshDelay.restart();
-    }
-}
-       
+
+
 
 /**
  * Dispatcher, will be called in each loop...
  */
 void CDisplay::dispatch() {
     // Power off configured and reached ?
-    if(!Config.AlwaysOn && !m_bNoRotateClearedActive) {
-        if(m_oPowerOffDelay.isDone()) {
+    if(!Config.AlwaysOn) {
+        // Show the screen as long as poweroffdelay is still active
+        // if already powered off, do nothing...
+        if(!m_bPowerOffIsActive && m_oPowerOffDelay.isDone()) {
             this->clearDisplay();
-            m_bNoRotateClearedActive = true;
+            m_bPowerOffIsActive = true;
         }
-    } else if(Config.RotateDisplays) {
-        if(m_oRotateDelay.isDone()) {
-            DEBUG_INFO("## -> activate next page of type LOOP");
-            activateNextPage(PageType::LOOP);
-            m_oRotateDelay.restart();
+    } else {
+        // Screens should be displayed, either static or rotate mode...
+        if(Config.RotateDisplays) {
+            if(m_oRotateDelay.isDone()) {
+                DEBUG_INFO("## -> activate next page of type LOOP");
+                activateNextPage(PageType::LOOP);
+                m_oRotateDelay.restart();
+            }
         }
+        // Tell the page to refresh the content...
         refreshCurrentPage();
-    } else activatePage(Config.StaticDisplayName);
+    } 
 }

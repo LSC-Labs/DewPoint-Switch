@@ -27,20 +27,16 @@ void CDisplayLogoPage::show(CDisplay *pDisplay) {
     DEBUG_FUNC_START();
     if(!this->isActive && pDisplay) {
         DEBUG_INFO("Activating LOGO display...");
-        pDisplay->setTextColor(SH110X_WHITE);
+        pDisplay->setTextColor(COLOR_WHITE);
         pDisplay->setCursor(0, 0);
         pDisplay->setTextSize(2);
-        pDisplay->printlnCentered("Dew Switch");
+        pDisplay->printlnCentered(APP_SHORTNAME);
         pDisplay->setTextSize(1);
         pDisplay->println("");
-        #ifdef DEBUGVERSION
-          pDisplay->printlnCentered("Version " PROG_VERSION "-D");
-        #else
-          pDisplay->printlnCentered("Version " PROG_VERSION);
-        #endif
+        pDisplay->printlnCentered("Version " APP_VERSION);
         pDisplay->println("");
-        pDisplay->printlnCentered("(c) 2025 LSC-Labs");
-        pDisplay->printlnCentered("P. Liebl");
+        pDisplay->printlnCentered("(c) " APP_COPYRIGHT " " APP_COMPANY);
+        pDisplay->printlnCentered(APP_AUTHOR);
         
         pDisplay->display();
         this->isActive = true;
@@ -57,7 +53,7 @@ void CDisplayDewPointPage::show(CDisplay *pDisplay) {
         int16_t nMiddle = pDisplay->width() / 2;
         int16_t nOffsetX = 6;
         int16_t nOffsetY = pDisplay->getCursorY() + 2;
-        pDisplay->drawLine(nMiddle,pDisplay->getCursorY(),nMiddle,pDisplay->height(),SCREEN_TEXT_WHITE);
+        pDisplay->drawLine(nMiddle,pDisplay->getCursorY(),nMiddle,pDisplay->height(),COLOR_WHITE);
         if(Status.pSI && Status.pSO) {
             char szBuffer[80];
             pDisplay->printAt(nOffsetX +6 ,nOffsetY,"Indoor");
@@ -110,7 +106,7 @@ void CDisplayTempPage::show(CDisplay *pDisplay) {
         int16_t nMiddle = pDisplay->width() / 2;
         int16_t nOffsetX = 6;
         int16_t nOffsetY = pDisplay->getCursorY() + 2;
-        pDisplay->drawLine(nMiddle,pDisplay->getCursorY(),nMiddle,pDisplay->height(),SCREEN_TEXT_WHITE);
+        pDisplay->drawLine(nMiddle,pDisplay->getCursorY(),nMiddle,pDisplay->height(),COLOR_WHITE);
         if(Status.pSI && Status.pSO) {
             char szBuffer[80];
             pDisplay->printAt(nOffsetX +6 ,nOffsetY,"Indoor");
@@ -165,7 +161,7 @@ void CDisplayHumidityPage::show(CDisplay *pDisplay) {
         int16_t nMiddle = pDisplay->width() / 2;
         int16_t nOffsetX = 6;
         int16_t nOffsetY = pDisplay->getCursorY() + 2;
-        pDisplay->drawLine(nMiddle,pDisplay->getCursorY(),nMiddle,pDisplay->height(),SCREEN_TEXT_WHITE);
+        pDisplay->drawLine(nMiddle,pDisplay->getCursorY(),nMiddle,pDisplay->height(),COLOR_WHITE);
         if(Status.pSI && Status.pSO) {
             char szBuffer[80];
             pDisplay->printAt(nOffsetX +6 ,nOffsetY,"Indoor");

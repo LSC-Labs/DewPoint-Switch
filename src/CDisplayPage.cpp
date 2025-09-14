@@ -9,13 +9,15 @@
 #include <Display.h>
 #include <DevelopmentHelper.h>
 
-CDisplayPage::CDisplayPage(String &strName,PageType eType) {
+CDisplayPage::CDisplayPage(String &strName,PageType eType, unsigned long ulRefreshTime) {
      m_strName = strName;  
      m_eType = eType; 
+     setRefreshTime(ulRefreshTime);
 };
-CDisplayPage::CDisplayPage(const char *pszName, PageType eType) { 
+CDisplayPage::CDisplayPage(const char *pszName, PageType eType, unsigned long ulRefreshTime) { 
     m_strName = String(pszName);
     m_eType = eType; 
+    setRefreshTime(ulRefreshTime);
 };
      
 

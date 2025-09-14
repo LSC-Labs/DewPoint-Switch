@@ -8,7 +8,9 @@
 #include <ProgVersion.h>
 #include <Msgs.h>
 #define APP_AUTHOR      "P. Liebl"
-#define APP_DESCRIPTION "Dew Point Monitor."
+#define APP_SHORTNAME   "Dew Switch"
+#define APP_DESCRIPTION "Dew Point Switch"
+#define APP_COMPANY     "LSC"
 #define APP_COPYRIGHT   "2025" 
 
 #include <ConfigHandler.h>
@@ -40,4 +42,6 @@
 #define SENSOR_OUTDOOR      2
 #define USE_OPEN_WEATHER   99
 
+// Press the button this time and a restart should be done
+#define BUTTON_PRESSED_TIME_TO_RESTART   5000
 
