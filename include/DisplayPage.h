@@ -7,6 +7,7 @@
     #define DISPLAY_START_PAGE "LOGO"
 #endif
 
+
 class CDisplay;
 
 enum PageType {

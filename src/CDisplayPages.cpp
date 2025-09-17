@@ -5,21 +5,30 @@
 #include <DisplayPages.h>
 #include <DevelopmentHelper.h>
 #include <ProgVersion.h>
+#include <Network.h>
 
-void CDisplayTestPage::show(CDisplay *pDisplay) {
+void CDisplayAccessPointPage::show(CDisplay *pDisplay) {
   DEBUG_FUNC_START();
-    pDisplay->setTextSize(1);
-    pDisplay->setTextColor(SH110X_WHITE);
-    pDisplay->setCursor(0, 0);
+    if(pDisplay) {
+        struct ip_info oIPInfo;
+        wifi_get_ip_info(SOFTAP_IF, &oIPInfo);
+		struct softap_config oConf;
+		wifi_softap_get_config(&oConf);
+        IPAddress ipaddr = IPAddress(oIPInfo.ip.addr);
 
-    for (uint8_t i = 0; i < 168; i++) {
-        if (i == '\n') continue;
-        pDisplay->write(i);
-        if ((i > 0) && (i % 21 == 0))
-            pDisplay->println();
+        pDisplay->setTextColor(COLOR_WHITE);
+        pDisplay->setCursor(0, 0);
+        pDisplay->setTextSize(2);
+        pDisplay->printlnCentered(APP_SHORTNAME);
+        pDisplay->setTextSize(1);
+        pDisplay->println("");
+        pDisplay->printlnCentered("No WiFi...\n");
+        pDisplay->printf("WiFi: %s\n",oConf.ssid );
+        pDisplay->printf("http://%s\n",ipaddr.toString().c_str());
+
+        pDisplay->display();
+        this->isActive = true;
     }
-    pDisplay->display();
-    this->isActive = true;
     DEBUG_FUNC_END();
 }
 

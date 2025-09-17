@@ -34,9 +34,10 @@ CDewSensor      oSensorID(D4,DHT11,SENSOR_INDOOR);
 CDewSensor      oSensorOD(-1,USE_OPEN_WEATHER,SENSOR_OUTDOOR);
 
 CDewPointSwitch oDewPointSwitch(oSensorID,oSensorOD);
-CButton         oBtn(D8,true);
+
 CSysStatusLed   oStatusLED(D5,D6,D0,false);
-CFanRelais      oFanRelais(D7);
+CButton         oBtn(D7,true);
+CFanRelais      oFanRelais(D8);
 CDisplay        oDisplay;
 CNTPHandler     oNTP;
 CAppActions     oAppActions;
@@ -74,9 +75,11 @@ void runDebugTests() {
 
 void registerDisplayPages() {
   oDisplay.registerPage(new CDisplayLogoPage(DISPLAY_START_PAGE));
+  oDisplay.registerPage(new CDisplayAccessPointPage("APConfig-Page"));
   oDisplay.registerPage(new CDisplayDewPointPage("DewPointPage"));
   oDisplay.registerPage(new CDisplayTempPage("TemperaturePage"));
   oDisplay.registerPage(new CDisplayHumidityPage("HumidityPage"));
+  
 }
 
 void registerModules() {
@@ -120,8 +123,6 @@ void setup() {
 #endif
   registerModules();
 
-  
-  
   oStatusLED.setColor(RGB_COLOR::BLUE);
 
   Appl.init(APP_NAME,APP_VERSION);
@@ -150,6 +151,11 @@ void setup() {
   //  runDebugTests();
   #endif
   oBtn.startMonitoring();
+
+  if(oWiFiController.Status.isInAccessPointMode) {
+    oDisplay.activatePage("APConfig-Page");
+    oDisplay.freezePage();
+  }
   DEBUG_FUNC_END();
 }
 

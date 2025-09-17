@@ -247,6 +247,12 @@ IDisplayPage * CDisplay::findNextPage(PageType eType) {
     return(pNextPage == nullptr ? pFirstPage : pNextPage);
 }
 
+/// @brief Freeze the page (rotation stops, no actions until explicit a new page is selected)
+/// @param bFreeze Default = true;
+void CDisplay::freezePage(bool bFreeze) {
+    m_bFreezePage = bFreeze;
+}
+
 bool CDisplay::activatePage(String &strName) {
     return(activatePage(strName.c_str()));
 }
@@ -301,23 +307,25 @@ bool CDisplay::activateNextPage(PageType eType) {
  */
 void CDisplay::dispatch() {
     // Power off configured and reached ?
-    if(!Config.AlwaysOn) {
-        // Show the screen as long as poweroffdelay is still active
-        // if already powered off, do nothing...
-        if(!m_bPowerOffIsActive && m_oPowerOffDelay.isDone()) {
-            this->clearDisplay();
-            m_bPowerOffIsActive = true;
-        }
-    } else {
-        // Screens should be displayed, either static or rotate mode...
-        if(Config.RotateDisplays) {
-            if(m_oRotateDelay.isDone()) {
-                DEBUG_INFO("## -> activate next page of type LOOP");
-                activateNextPage(PageType::LOOP);
-                m_oRotateDelay.restart();
+    if(!m_bFreezePage) {
+        if(!Config.AlwaysOn) {
+            // Show the screen as long as poweroffdelay is still active
+            // if already powered off, do nothing...
+            if(!m_bPowerOffIsActive && m_oPowerOffDelay.isDone()) {
+                this->clearDisplay();
+                m_bPowerOffIsActive = true;
             }
-        }
-        // Tell the page to refresh the content...
-        refreshCurrentPage();
-    } 
+        } else {
+            // Screens should be displayed, either static or rotate mode...
+            if(Config.RotateDisplays) {
+                if(m_oRotateDelay.isDone()) {
+                    DEBUG_INFO("## -> activate next page of type LOOP");
+                    activateNextPage(PageType::LOOP);
+                    m_oRotateDelay.restart();
+                }
+            }
+            // Tell the page to refresh the content...
+            refreshCurrentPage();
+        } 
+    }
 }

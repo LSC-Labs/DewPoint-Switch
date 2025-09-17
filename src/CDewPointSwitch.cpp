@@ -40,11 +40,13 @@ void CDewPointSwitch::readConfigFrom(JsonObject & oCfg) {
 
 bool CDewPointSwitch::setNewDewpointState(float fIndoor,float fOutdoor) {
     bool bSetDone = false;
-    if(!isnan(fIndoor) && !isnan(fOutdoor)) {
+    if(!isnan(fIndoor)) {
         if(m_fLastInternalDewPoint != fIndoor) {
             m_fLastInternalDewPoint = fIndoor;
             bSetDone = true;
         }
+    }
+    if(!isnan(fOutdoor)) {
         if(m_fLastExternalDewPoint != fOutdoor) {
             m_fLastExternalDewPoint = fOutdoor;
             bSetDone = true;

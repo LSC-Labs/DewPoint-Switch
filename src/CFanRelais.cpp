@@ -5,8 +5,8 @@
 #include <DevelopmentHelper.h>
 
 
-CFanRelais::CFanRelais(int nSwitchPin, bool bLowLevelIsOff) :
-    COutputPinController::COutputPinController(nSwitchPin, bLowLevelIsOff) 
+CFanRelais::CFanRelais(int nSwitchPin, bool bLowLevelIsOn) :
+    COutputPinController::COutputPinController(nSwitchPin, bLowLevelIsOn) 
     { 
     }
 

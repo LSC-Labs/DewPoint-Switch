@@ -28,6 +28,7 @@ class CDisplay :public IConfigHandler, public IMsgEventReceiver, public DISPLAY_
         CSimpleDelay m_oPowerOffDelay;
         CSimpleDelay m_oPageRefreshDelay;
         bool m_bPowerOffIsActive = false;
+        bool m_bFreezePage = false; // Keep the same page !
 
     public: 
         CDisplay();
@@ -44,7 +45,7 @@ class CDisplay :public IConfigHandler, public IMsgEventReceiver, public DISPLAY_
         bool activateNextPage(PageType eType);
         void hideCurrentPage();
         void refreshCurrentPage(bool bForce = false);
-
+        void freezePage(bool bFreeze = true);
         void readConfigFrom(JsonObject & oCfg) override;
         void writeConfigTo(JsonObject & oCfg, bool bHideCritical) override;
         int receiveEvent(const void * pSender, int nMsgType, const void * pMessage, int nClass) override;

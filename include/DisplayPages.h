@@ -6,9 +6,9 @@
 #include <DisplayBasePage.h>
 
 
-class CDisplayTestPage : public CDisplayPage {
+class CDisplayAccessPointPage : public CDisplayPage {
     public:
-        CDisplayTestPage(const char *pszName) : CDisplayPage(pszName,PageType::SETUP) {}
+        CDisplayAccessPointPage(const char *pszName) : CDisplayPage(pszName,PageType::SETUP) {}
         virtual void show(CDisplay *pDisplay) override;
     
 };
