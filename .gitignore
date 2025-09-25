@@ -5,6 +5,7 @@
 .vscode/launch.json
 .vscode/ipch
 _obsolete
+data/config.json
 node_modules
 bin/*
 test

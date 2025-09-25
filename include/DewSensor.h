@@ -1,11 +1,11 @@
 #pragma once
+
 #include <Arduino.h>
 #include <Appl.h>
 #include <AppConfig.h>
 #include <EventHandler.h>
 #include <SimpleDelay.h>
 #include <DHT.h>
-
 
 struct DewStatus {
     float TempRawC      = NAN;
@@ -30,7 +30,7 @@ struct DewConfig {
     String strWeatherURL = "http://api.openweathermap.org/data/2.5/weather";
     String strWeatherAppID = "36cfc67cc00883f082b22e216d6bfb6b";
     String strWeatherLongitude = "11.553641";
-    String strWeatherLatitude  = "48.251690";
+    String strWeatherLatitude  = "23.556778";
     String strWeatherExclude;
     unsigned long nWeatherCallTimeout = 1000 * 60 * 2; // Call every 2 minutes to avoid the 1000 calls per day limit.
 #ifdef DEBUGINFOS
@@ -45,7 +45,7 @@ class CDewSensor : public IMsgEventReceiver, public IConfigHandler,public IStatu
         DewConfig Config;
         CSimpleDelay m_oSensorReadDelay;      
         CSimpleDelay m_oUpdateDelay; // Update delay overall...
-        DHT *pSensor = nullptr;     
+        DHT *pSensor = nullptr; 
         bool m_bInternetAvailable = false;
         JsonDocument OpenWeatherData;
 
@@ -57,7 +57,7 @@ class CDewSensor : public IMsgEventReceiver, public IConfigHandler,public IStatu
         ~CDewSensor();
         CDewSensor(int nPort, int nSensorType, int nLocation);
 
-        void setup(int nPort, int nSensorType, int nLocation);
+        void begin(int nPort, int nSensorType, int nLocation);
         
         // Interface implementations
         void writeStatusTo(JsonObject & oObj) override;

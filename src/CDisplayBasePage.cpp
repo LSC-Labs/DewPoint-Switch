@@ -36,7 +36,7 @@ void CDisplayBasePage::init() {
 int CDisplayBasePage::receiveEvent(const void * pSender, int nMsgType, const void * pMessage, int nType) {
     switch(nMsgType) {
         case MSG_SENSOR_STATUS: 
-                                if(nType == SENSOR_INDOOR) Status.pSI = (DewStatus *) pMessage;
+                                if(nType == SENSOR_INDOOR)  Status.pSI = (DewStatus *) pMessage;
                                 if(nType == SENSOR_OUTDOOR) Status.pSO = (DewStatus *) pMessage;
                                 break;
         case MSG_REBOOT_REQUEST: Status.isRebootPending = true;    break;
@@ -106,4 +106,15 @@ int CDisplayBasePage::drawPageHeader(CDisplay *pDisplay) {
     pDisplay->setCursor(0,11);
     DEBUG_FUNC_END();
     return(pDisplay->getCursorY());
+}
+
+int CDisplayBasePage::drawNumberFrame(CDisplay *pDisplay) {
+  int16_t nMiddle = pDisplay->width() / 2;
+  int16_t nOffsetX = 6;
+  int16_t nOffsetY = pDisplay->getCursorY() + 2;
+  pDisplay->drawLine(nMiddle,pDisplay->getCursorY(),nMiddle,pDisplay->height(),COLOR_WHITE);
+  pDisplay->printAt(nOffsetX +6 ,nOffsetY,"Indoor");
+  pDisplay->printAt(nMiddle +6 + nOffsetX,nOffsetY,"Outdoor");
+  nOffsetY += 12;
+  return(nOffsetY);
 }

@@ -14,7 +14,7 @@
 #define DEW_STATUS_ERROR        F("in_error")
 #define DEW_STATUS_INTERRMSG    F("int_error")
 #define DEW_STATUS_EXTERRMSG    F("ext_error")
-#define DEW_STATUS_ACTIVEVAN    F("van_active")
+#define DEW_STATUS_ACTIVEVAN    F("fan_active")
 
 
 void CDewPointSwitch::writeStatusTo(JsonObject & oStatus) {

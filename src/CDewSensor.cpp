@@ -43,24 +43,27 @@ CDewSensor::~CDewSensor() { if(pSensor != nullptr) free(pSensor); }
 CDewSensor::CDewSensor(int nPin, int nSensorType, int nLocation) {
     DEBUG_FUNC_START();
     m_oUpdateDelay.start(5000);
-    setup(nPin,nSensorType,nLocation);
-
+    begin(nPin,nSensorType,nLocation);
 };
 
-void CDewSensor::setup(int nPin, int nSensorType, int nLocation) {
+void CDewSensor::begin(int nPin, int nSensorType, int nLocation) {
+    DEBUG_FUNC_START_PARMS("%d,%d,%d",nPin,nSensorType,nLocation);
     if(nSensorType == USE_OPEN_WEATHER) {
         Config.bIsPhysicalSensor = false;
         m_oSensorReadDelay.start(this->Config.nWeatherCallTimeout);
     } else {
-        this->Config.bIsPhysicalSensor = true;
-        this->pSensor =  new DHT(nPin,nSensorType);
-        this->pSensor->begin();
+        Config.bIsPhysicalSensor = true;
+        pSensor =  new DHT(nPin,nSensorType);
+        pSensor->begin();
         m_oSensorReadDelay.start(this->Config.nSensorReadTimeout);
     }
     Status.SensorLocation = nLocation;    
+    DEBUG_FUNC_END();
 };
 
 void CDewSensor::readConfigFrom(JsonObject & oCfg) {
+    DEBUG_FUNC_START();
+    Serial.printf("### adjust temp read from json : %f << org value\n",Config.adjustTempC);
     LSC::setValue(&Config.bIsPhysicalSensor,    oCfg[SENSOR_CFG_IS_SENSOR]);
     LSC::setValue(&Config.adjustHumidity,       oCfg[SENSOR_CFG_ADJUST_HUMIDITY]);
     LSC::setValue(&Config.adjustTempC,          oCfg[SENSOR_CFG_ADJUST_TEMP]);
@@ -70,19 +73,27 @@ void CDewSensor::readConfigFrom(JsonObject & oCfg) {
     DEBUG_INFOS(" ## -> Configured as %s sensor", Config.bIsPhysicalSensor ? "physical" : "open weather");
     m_oSensorReadDelay.start( Config.bIsPhysicalSensor      ? 
                             Config.nSensorReadTimeout   :
-                            Config.nWeatherCallTimeout  );
+                            Config.nWeatherCallTimeout  )->setExpired();
+    DEBUG_INFOS("SENSOR %d is expired == %d",Status.SensorLocation,m_oSensorReadDelay.isDone());
+    #ifdef DEBUGINFOS
+        m_oSensorReadDelay.printDiag();
+    #endif
+    DEBUG_FUNC_END();
 }
 
 void CDewSensor::writeConfigTo(JsonObject & oCfg, bool bHideCritical) {
+    DEBUG_FUNC_START();
     oCfg[SENSOR_CFG_IS_SENSOR]          = Config.bIsPhysicalSensor;
     oCfg[SENSOR_CFG_ADJUST_HUMIDITY]    = Config.adjustHumidity;
     oCfg[SENSOR_CFG_ADJUST_TEMP]        = Config.adjustTempC;
     oCfg[SENSOR_CFG_OPENWEATHER_KEY]    = Config.strWeatherAppID;
-    oCfg[SENSOR_CFG_OPENWEATHER_LON]   = Config.strWeatherLongitude;
+    oCfg[SENSOR_CFG_OPENWEATHER_LON]    = Config.strWeatherLongitude;
     oCfg[SENSOR_CFG_OPENWEATHER_LAT]    = Config.strWeatherLatitude;
+    DEBUG_FUNC_END();
 }
 
 void CDewSensor::writeStatusTo(JsonObject & oStatus) {
+    DEBUG_FUNC_START();
     oStatus[SENSOR_CFG_IS_SENSOR]       = Config.bIsPhysicalSensor;
     oStatus[SENSOR_STATUS_TEMPC]        = Status.TempC;
     oStatus[SENSOR_STATUS_TEMPC_RAW]    = Status.TempRawC;
@@ -95,6 +106,7 @@ void CDewSensor::writeStatusTo(JsonObject & oStatus) {
     if(!Config.bIsPhysicalSensor) {
         oStatus[SENSOR_STATUS_INTERNET]     = isInternetAvailable();
     }
+    DEBUG_FUNC_END();
 }
 
 /// @brief Listen to the messagebus - detect if internet is available or not.
@@ -155,7 +167,6 @@ float CDewSensor::adjustAndStoreHumidity(float fRawData) {
     return(Status.Humidity);
 }
 
-
 void CDewSensor::updateFromPhysicalSensor() {
     DEBUG_FUNC_START();
     if(this->pSensor) {
@@ -163,10 +174,13 @@ void CDewSensor::updateFromPhysicalSensor() {
             DEBUG_INFO(" ->> reading physical sensor");
             // Force reading in Celsius
             try {
-                adjustAndStoreTemperatures(pSensor->readTemperature(false),false);
-                adjustAndStoreHumidity(this->pSensor->readHumidity());
+                float fTemp = pSensor->readTemperature(false);
+                float fHumi = pSensor->readHumidity();
+                DEBUG_INFOS("Sensor (phys): %f - %f",fTemp,fHumi);
+                adjustAndStoreTemperatures(fTemp,false);
+                adjustAndStoreHumidity(fHumi);
             } catch(...) {
-                Serial.println("[E] Exception while reading physical sensor");
+                Serial.println(F("[E] Exception while reading physical sensor"));
             }
             Status.LastSensorReadMillis = m_oSensorReadDelay.restart();
         } else {
@@ -186,7 +200,7 @@ void  CDewSensor::updateFromOpenWeatherMap() {
     
         if(m_oSensorReadDelay.isDone()) {
             try {
-                DEBUG_INFOS(" ->> calling web API (%lu + %lu) > %lu",Status.LastWeatherCallMillis,Config.nWeatherCallTimeout, millis());
+                DEBUG_INFOS(" ->> calling weather API (%lu + %lu) > %lu",Status.LastWeatherCallMillis,Config.nWeatherCallTimeout, millis());
                 String strCallUrl = Config.strWeatherURL + 
                                     "?units=metric"
                                     "&lat=" + Config.strWeatherLatitude + 
@@ -223,7 +237,7 @@ void  CDewSensor::updateFromOpenWeatherMap() {
                     adjustAndStoreHumidity(fHumi);
                 }
             } catch(...) {
-                Serial.println("[E] Exception in requesting data from Open weather");
+                Serial.println(F("[E] Exception in requesting data from Open weather"));
             }
             Status.LastWeatherCallMillis = m_oSensorReadDelay.restart();
         } else {
@@ -275,28 +289,28 @@ float CDewSensor::calculateDewPoint(float fTemp, float fHumidity, bool bAsFarenh
     DEBUG_FUNC_START_PARMS("%f,%f",fTemp,fHumidity);
     float a, b;
   
-  if (fTemp >= 0) {
-    a = 7.5;
-    b = 237.3;
-  } else {
-    a = 7.6;
-    b = 240.7;
-  }
+    if (fTemp >= 0) {
+        a = 7.5;
+        b = 237.3;
+    } else {
+        a = 7.6;
+        b = 240.7;
+    }
   
-  // Sättigungsdampfdruck in hPa
-  float sdd = 6.1078 * pow(10, (a*fTemp)/(b+fTemp));
-  
-  // Dampfdruck in hPa
-  float dd = sdd * (fHumidity/100);
-  
-  // v-Parameter
-  float v = log10(dd/6.1078);
-  
-  // Taupunkttemperatur (°C)
-  float tt = (b*v) / (a-v);
+    // Sättigungsdampfdruck in hPa
+    float sdd = 6.1078 * pow(10, (a*fTemp)/(b+fTemp));
+    
+    // Dampfdruck in hPa
+    float dd = sdd * (fHumidity/100);
+    
+    // v-Parameter
+    float v = log10(dd/6.1078);
+    
+    // Taupunkttemperatur (°C)
+    float tt = (b*v) / (a-v);
 
-  DEBUG_FUNC_END_PARMS("%f",bAsFarenheit ? LSC::getFarenheitFromCelsius(tt) : tt);
-  return { tt }; 
+    DEBUG_FUNC_END_PARMS("%f",bAsFarenheit ? LSC::getFarenheitFromCelsius(tt) : tt);
+    return { bAsFarenheit ? LSC::getFarenheitFromCelsius(tt) : tt }; 
 }
 
 /// @brief Updates Temp and Humidity, calculates the Dew Point and sends the
@@ -304,14 +318,16 @@ float CDewSensor::calculateDewPoint(float fTemp, float fHumidity, bool bAsFarenh
 float CDewSensor::getDewPoint(bool bInFarenheit) {
     float fResult = Status.DewPoint;
     if(m_oUpdateDelay.isDone()) {
+        DEBUG_INFOS("SENSOR %d - start getDewPoint(%d)",Status.SensorLocation,bInFarenheit);
         getTemperature();
         getHumidity();
         if(!isnan(Status.TempC) && !isnan(Status.Humidity)) {
             Status.DewPoint = calculateDewPoint(Status.TempC,Status.Humidity,bInFarenheit);
-            fResult = Status.DewPoint;
-            Appl.MsgBus.sendEvent(this,MSG_SENSOR_STATUS,&Status,Status.SensorLocation);
+            fResult = Status.DewPoint; 
         }
+        Appl.MsgBus.sendEvent(this,MSG_SENSOR_STATUS,&Status,Status.SensorLocation);
         m_oUpdateDelay.restart();
-    }
+        DEBUG_INFOS("SENSOR %d - end  getDewPoint()",Status.SensorLocation);
+    } 
     return(fResult);
 }

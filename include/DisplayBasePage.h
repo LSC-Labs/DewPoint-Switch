@@ -26,6 +26,7 @@ class CDisplayBasePage : public CDisplayPage, public IMsgEventReceiver {
         CDisplayBasePage(String strName, PageType eType) : CDisplayPage(strName,eType){init();};
         int receiveEvent(const void * pSender, int nMsgType, const void * pMessage, int nClass) override;
         int drawPageHeader(CDisplay *pDisplay);
+        int drawNumberFrame(CDisplay *pDisplay);
 
         void sprintfSensorDewPoint(char *pszBuffer,DewStatus *pStatus) {
             if(pszBuffer) {
@@ -47,7 +48,7 @@ class CDisplayBasePage : public CDisplayPage, public IMsgEventReceiver {
         void sprintfSensorHumidity(char *pszBuffer,DewStatus *pStatus) {
             if(pszBuffer) {
                 float fData = pStatus ? pStatus->Humidity ? pStatus->Humidity : NAN : NAN;
-                if(isnan(fData)) strcpy(pszBuffer," -- %%");
+                if(isnan(fData)) strcpy(pszBuffer," -- %");
                 else {
                     if(fData > -1) sprintf(pszBuffer,"%2.f %%",fData);
                     else sprintf(pszBuffer,"%2.f %%",fData);

@@ -11,7 +11,7 @@
 #include <DewSensor.h>
 #include <DewPointSwitch.h>
 #include <FanRelais.h>
-#include <SysStatusLed.h>
+#include <DewStatusLed.h>
 #include <Display.h>
 #include <DisplayPages.h>
 #include <NTPHandler.h>
@@ -29,13 +29,13 @@ CMQTTController oMqttController;
 CWebSocket      oWebSocket("/ws");
 CWebServer      oWebServer(80);
 
-CDewSensor      oSensorID(D4,DHT11,SENSOR_INDOOR);
+CDewSensor      oSensorID(D4,DHT22,SENSOR_INDOOR);
 // CDewSensor      oSensorOD(D3,DHT11,SENSOR_OUTDOOR);
 CDewSensor      oSensorOD(-1,USE_OPEN_WEATHER,SENSOR_OUTDOOR);
 
 CDewPointSwitch oDewPointSwitch(oSensorID,oSensorOD);
 
-CSysStatusLed   oStatusLED(D5,D6,D0,false);
+CDewStatusLed   oStatusLED(D6,D5,D0,false);
 CButton         oBtn(D7,true);
 CFanRelais      oFanRelais(D8);
 CDisplay        oDisplay;
@@ -118,6 +118,7 @@ void setup() {
   oDisplay.init();
   // oBtn.setup(D7,true);
 
+
 #ifdef DEVTESTS
   setupTest();
 #endif
@@ -148,7 +149,7 @@ void setup() {
   delay(200);
 
   #ifdef DEBUGINFOS
-  //  runDebugTests();
+    // runDebugTests();
   #endif
   oBtn.startMonitoring();
 

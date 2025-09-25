@@ -11,6 +11,7 @@ int CAppActions::receiveEvent(const void *pSender, int nMsg, const void *pMsg, i
                                 m_oButtonRestartDelay.restart();
                                 break;
         case MSG_BUTTON_OFF :   m_bButtonPressed = false; 
+                                Appl.MsgBus.sendEvent(this,MSG_DISPLAY_NEXT_PAGE,nullptr,0);
                                 break;
     }
     return(EVENT_MSG_RESULT_OK);
@@ -23,5 +24,5 @@ void CAppActions::dispatch() {
             m_bRebootPending = true;
             Appl.MsgBus.sendEvent(this,MSG_REBOOT_REQUEST,0,0);
         }
-    }
+    } 
 }

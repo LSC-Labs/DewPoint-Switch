@@ -10,6 +10,7 @@
 #include <DisplayPage.h>
 #include <LSCUtils.h>
 #include <JsonHelper.h>
+#include <AppActions.h>
 
 #define CFG_ALWAYS_ON       F("alwaysOn")
 #define CFG_STATIC_PAGE     F("staticPage")
@@ -69,6 +70,12 @@ void CDisplay::init(int nI2CAddress, bool bResetPin) {
 }
 
 int CDisplay::receiveEvent(const void * pSender, int nMsgType, const void * pMessage, int nClass) {
+    switch(nMsgType) {
+        case MSG_DISPLAY_NEXT_PAGE: // Show next page (mostly by button)
+            PageType eType = m_pCurrentPage ? m_pCurrentPage->getType() : PageType::LOOP;
+            // this->activateNextPage(eType);
+            break;
+    }
     return(EVENT_MSG_RESULT_OK);
 } 
 

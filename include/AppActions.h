@@ -5,6 +5,10 @@
 #include <Msgs.h>
 #include <SimpleDelay.h>
 
+
+#define MSG_DISPLAY_NEXT_PAGE MSG_USER_BASE + 150
+
+
 class CAppActions : public IMsgEventReceiver {
     protected:
         bool m_bRebootPending = false;

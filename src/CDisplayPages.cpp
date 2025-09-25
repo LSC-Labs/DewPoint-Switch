@@ -63,12 +63,11 @@ void CDisplayDewPointPage::show(CDisplay *pDisplay) {
         int16_t nOffsetX = 6;
         int16_t nOffsetY = pDisplay->getCursorY() + 2;
         pDisplay->drawLine(nMiddle,pDisplay->getCursorY(),nMiddle,pDisplay->height(),COLOR_WHITE);
+        pDisplay->printAt(nOffsetX +6 ,nOffsetY,"Indoor");
+        pDisplay->printAt(nMiddle +6 + nOffsetX,nOffsetY,"Outdoor");
+        nOffsetY += 12;
         if(Status.pSI && Status.pSO) {
             char szBuffer[80];
-            pDisplay->printAt(nOffsetX +6 ,nOffsetY,"Indoor");
-            pDisplay->printAt(nMiddle +6 + nOffsetX,nOffsetY,"Outdoor");
-            nOffsetY += 12;
-
             pDisplay->setTextSize(1,2);
             pDisplay->setCursor(0,nOffsetY);
             // Show indoor / outdoor Dew Points
@@ -116,12 +115,11 @@ void CDisplayTempPage::show(CDisplay *pDisplay) {
         int16_t nOffsetX = 6;
         int16_t nOffsetY = pDisplay->getCursorY() + 2;
         pDisplay->drawLine(nMiddle,pDisplay->getCursorY(),nMiddle,pDisplay->height(),COLOR_WHITE);
+        pDisplay->printAt(nOffsetX +6 ,nOffsetY,"Indoor");
+        pDisplay->printAt(nMiddle +6 + nOffsetX,nOffsetY,"Outdoor");
+        nOffsetY += 12;
         if(Status.pSI && Status.pSO) {
             char szBuffer[80];
-            pDisplay->printAt(nOffsetX +6 ,nOffsetY,"Indoor");
-            pDisplay->printAt(nMiddle +6 + nOffsetX,nOffsetY,"Outdoor");
-            nOffsetY += 12;
-
             pDisplay->setTextSize(1,2);
             pDisplay->setCursor(0,nOffsetY);
             // Show indoor / outdoor Dew Points
@@ -167,15 +165,19 @@ void CDisplayHumidityPage::show(CDisplay *pDisplay) {
         DEBUG_INFO("Activating DewPoint display...");
         pDisplay->clearDisplay();
         drawPageHeader(pDisplay);
+        
         int16_t nMiddle = pDisplay->width() / 2;
         int16_t nOffsetX = 6;
+        /*
+        
         int16_t nOffsetY = pDisplay->getCursorY() + 2;
         pDisplay->drawLine(nMiddle,pDisplay->getCursorY(),nMiddle,pDisplay->height(),COLOR_WHITE);
+        pDisplay->printAt(nOffsetX +6 ,nOffsetY,"Indoor");
+        pDisplay->printAt(nMiddle +6 + nOffsetX,nOffsetY,"Outdoor");
+        */
+        int16_t nOffsetY = drawNumberFrame(pDisplay);
         if(Status.pSI && Status.pSO) {
             char szBuffer[80];
-            pDisplay->printAt(nOffsetX +6 ,nOffsetY,"Indoor");
-            pDisplay->printAt(nMiddle +6 + nOffsetX,nOffsetY,"Outdoor");
-            nOffsetY += 12;
 
             pDisplay->setTextSize(1,2);
             pDisplay->setCursor(0,nOffsetY);
