@@ -196,7 +196,7 @@ void CDisplay::refreshCurrentPage(bool bForce) {
     if(m_pCurrentPage != nullptr) {
         if(bForce || m_oPageRefreshDelay.isDone()) {
             m_pCurrentPage->show(this);
-            m_oPageRefreshDelay.restart();
+            m_oPageRefreshDelay.next();
             DEBUG_INFOS(" - next page refresh in : %lu ms",m_oPageRefreshDelay.getRemaining());
         }
     }

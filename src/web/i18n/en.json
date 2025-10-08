@@ -3,7 +3,10 @@
   "menu": {
     "signin": "Sign in",
     "signout": "Sign out",
-    "Support": "Feedback / Ticket"
+    "Support": "Feedback / Ticket",
+    "Settings": "Settings",
+    "Maintenance": "Maintenance",
+    "Device": "Device"
   },
   "main": {
     "ok": "OK",
@@ -12,13 +15,16 @@
     "enabled": "Enabled",
     "disabled": "Disabled",
     "cancel": "Cancel",
+    "changePending": "You have uncommited changes, please click here to review and commit.",
     "pleaseReview": "Please review the changes.",
     "saveReboot": "Save and Reboot...",
     "conLost": "Connection with $(prog_name) device absent. Reconnecting...",
-    "noFileSelected": "There is no file selected..."
+    "noFileSelected": "There is no file selected...",
+    "saveBtn": "Save"
   },
-  "login": {
-    "title": "Please enter your device admin password..."
+  "signin": {
+    "title": "Please enter your device admin password...",
+    "submit": "Login"
   },
   "dialog": {
     "wait": {
@@ -138,7 +144,7 @@
     },
     "gw": {
       "info": "Address of the Gateway to the world.",
-      "label": "Gatway"
+      "label": "Gateway"
     },
     "fallback": {
       "info": "Fallback to Access Point Mode when WiFi Network could not be joined.",
@@ -197,9 +203,13 @@
     "title": "Set the name of your device (hostname) and the password for the admin account",
     "hostname": {
       "text": "Host name",
-      "info": "enter here..."
+      "info": "enter here...",
+      "title": "Enter the hostname here..."
     },
-    "password": "Password"
+    "password": {
+      "text": "Password",
+      "title": "Enter the password for the admin account"
+    }
   },
   "DewPoint": {
     "legend": "Dew Point Thresholds",
@@ -271,8 +281,7 @@
       "desc": "Click and choose your file from your local device to be restored.",
       "btn": "Restore Settings",
       "invalidFile": "The file you selected is not a valid backup file..."
-    },
-    "changePending": "You have uncommited changes, please click here to review and commit."
+    }
   },
   "Firmware": {
     "legend": "Firmware update (current firmware: $(prog_ver))",

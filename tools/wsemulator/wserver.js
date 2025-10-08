@@ -8,7 +8,7 @@
  * Expecting module to be in project subdir toos/wsemulator (2 Level deep !)
  */
 
-console.log("[I] Starting WebSocket Emulation Server for OnAir Hardware");
+console.log("[I] Starting WebSocket Emulation Server for your hardware");
 console.log("[I] You can connect to ws://localhost (port is 8080)");
 console.log("[I| Send your requests to this port with json requests like {\"command\": \"status\"}");
 console.log("[I] ..use i.E. Postmand with websock request");

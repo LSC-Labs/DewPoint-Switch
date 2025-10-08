@@ -35,8 +35,8 @@ class CDisplayPage : public IDisplayPage {
         unsigned long m_ulRefreshTime = 500;
         
     public:
-        CDisplayPage(String &strName,       PageType eType = PageType::LOOP, unsigned long ulRefreshTime = 200);
-        CDisplayPage(const char *pszName,   PageType eType = PageType::LOOP, unsigned long ulRefreshTime = 200);
+        CDisplayPage(String &strName,       PageType eType = PageType::LOOP, unsigned long ulRefreshTime = 500);
+        CDisplayPage(const char *pszName,   PageType eType = PageType::LOOP, unsigned long ulRefreshTime = 500);
         const char *    getName() { return(m_strName.c_str()); };
         PageType        getType() { return(m_eType); };
         void            setRefreshTime(unsigned long ulTime) { m_ulRefreshTime = ulTime; }

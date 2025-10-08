@@ -1,0 +1,66 @@
+{
+    "menu": {
+        "DewSwitch": "Schwellwerte",
+        "SensorsID": "Innensensor",
+        "SensorsOD": "Außensensor"        
+
+    },
+    "DewPoint": {
+        "legend": "Taupunkt Schwellwerte",
+        "title" : "Setzen Sie die Taupunkt Schwellwerte für die Sensoren",
+        "hysteresis": "Hysterse",
+        "hyst": {
+            "label": "Hysterese",
+            "info" : "Verzögerung des Einschaltens in °C"
+        },
+        "delta": {
+            "label" : "Delta",
+            "info"  : "Taupunkt Delta in °C das vorliegen muss, bevor der Lüfter aktiviert wird"
+        },
+        "min" :{
+            "intern" : {
+                "label" : "Min intern",
+                "info" : "Mindestemperatur innen in °C"
+            },
+             "extern" : {
+                "label" : "Min extern",
+                "info" : "Mindestemperatur außen in °C"
+            }
+        }
+    },
+    
+    "Sensor": {
+        "legend": "Taupunkt Sensor",
+        "title" : "Justieren und konfigurieren des Taupunkt Sensors.",
+        "ID": "Innen",
+        "OD": "Außen",
+        "adjust_t": {
+            "label": "Temp Offset",
+            "info" : "Justieren der Temperatur"
+        },
+        "adjust_h": {
+            "label": "Hydro Offset",
+            "info" : "Justieren der Luftfeuchtigkeit"
+        },
+        "physical": {
+            "label":"Physischer Sensor",
+            "info" :"Wählen Sie, ob es ein virtueller oder ein physischer Sensor ist."
+        },
+        "open": {
+            "name": "Wetterdienst",
+            "appID" : { 
+                "label" : "App ID",
+                "info" : "Die registrierte ID von Open Weather."
+            },
+            "lon" : {
+                "label" : "Längengrad",
+                "info" : "Längengrad der Lokation."
+            },
+            "lat" : {
+                "label": "Breitengrad",
+                "info" : "Breitengrad der Lokation"
+            }
+        }
+       
+    }
+}
