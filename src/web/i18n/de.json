@@ -135,7 +135,7 @@
     },
     "Restore": {
       "title": "Lade eine Konfiguration",
-      "desc": "Wählen Sie die Datei aus der die Konfiguration wieder herstellt, bzw. geladen werden soll.",
+      "desc": "Wählen Sie die Datei aus der die Konfiguration wieder hergestellt, bzw. geladen werden soll.",
       "btn": "Lade Konfig",
       "invalidFile": "Die gewählte Datei ist keine gültige Sicherungsdatei..."
     }

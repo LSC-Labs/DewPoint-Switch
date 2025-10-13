@@ -28,7 +28,7 @@ struct DewConfig {
     /** only needed if open weather map is used **/
     // String strWeatherURL = "https://api.openweathermap.org/data/3.0/onecall";
     String strWeatherURL = "http://api.openweathermap.org/data/2.5/weather";
-    String strWeatherAppID = "36cfc67cc00883f082b22e216d6bfb6b";
+    String strWeatherAppID = "1234c67c123483f081234e2112341234";
     String strWeatherLongitude = "11.553641";
     String strWeatherLatitude  = "23.556778";
     String strWeatherExclude;

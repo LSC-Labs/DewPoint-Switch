@@ -7,9 +7,9 @@
 #define PROG_VERSION_NAME  "DewPoint-Monitor"
 
 #define PROG_VERSION_MAJOR 0
-#define PROG_VERSION_MINOR 1
+#define PROG_VERSION_MINOR 9
 #define PROG_VERSION_PATCH 0
-#define PROG_VERSION_BUILD 1
-#define PROG_VERSION       "0.1.0"
-#define PROG_VERSION_SHORT "0.1"
-#define PROG_VERSION_LONG  "0.1.0.1"
+#define PROG_VERSION_BUILD 7
+#define PROG_VERSION       "0.9.0"
+#define PROG_VERSION_SHORT "0.9"
+#define PROG_VERSION_LONG  "0.9.0.7"
