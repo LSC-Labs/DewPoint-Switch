@@ -27,7 +27,8 @@
         "lib/PLibESPV1/src/web/pages/Device",
         "src/web/pages/DewPoint",
         "lib/PLibESPV1/src/web/pages/Backup",
-        "lib/PLibESPV1/src/web/pages/Firmware"
+        "lib/PLibESPV1/src/web/pages/Firmware",
+        "src/web/pages/Feedback"
     ],
 
     "sync" : {
