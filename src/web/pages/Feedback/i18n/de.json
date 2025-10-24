@@ -1,0 +1,18 @@
+{
+    "menu": {
+        "Feedback": "Kontakt"
+    },
+    "Feedback": {
+        "legend": "Fragen & Feedback",
+        "desc": "Probleme mit der Software? Eine Idee/Wunsch für ein neues Feature? Kontaktieren Sie das Entwicklungsteam...",
+        "doc": "Dokumentation",
+        "docText": "Hier finden Sie die aktuellen Handbücher (eventuell werden dort bereits ihre Fragen beantworteten).",
+        "docBtn": "Handbücher",
+        "email": "Schicken Sie eine Mail",
+        "emailText": "Kontaktieren Sie uns über Mail - gut, Geld 💵 schicken geht damit nicht, aber falls Sie möchten, finden wir einen Weg :-) ).",
+        "emailBtn": "Mail",
+        "github": "Via GitHub",
+        "githubText": "Öffnen Sie ein Ticket auf GitHub (für gefundene Fehler oder Implementierungs Anfragen / Ideen).",
+        "githubBtn": "Öffne Ticket"
+    }
+}

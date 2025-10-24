@@ -11,8 +11,8 @@ const APP_SETTINGS = {
      * Use them in this files as $(<name>)
      */
     "app": {
-        "prog_name": "Dew Point Monitor",
-        "prog_ver": "0.1",
+        "prog_name": "Dew Point Switch",
+        "prog_ver": "0.9",
         "prog_copy": "(c) 2025 LSC-Labs",
         "logLevel": 5,
         "ws": {
@@ -23,7 +23,6 @@ const APP_SETTINGS = {
         },
         "GitHubPage": "https://github.com/LSC-Labs/DewPoint-Switch",
         "mailto":"office@lsc-labs.de?subject=$(prog_name) - v$(prog_ver)"
-        
     },
 
     "icons" : {
@@ -55,6 +54,19 @@ const APP_SETTINGS = {
                 "data": [ 
                     "M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0",
                     "M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
+                ]
+            },
+            {
+                "name": "MenuIcon",
+                "type": "svg",
+                "class": "bi bi-cloud-drizzle",
+                "attr": {
+                    "viewBox": "-5 0 16 16",
+                    "height": "20px",
+                    "width": "32px"
+                },
+                "data": [
+                    "M4.158 12.025a.5.5 0 0 1 .316.633l-.5 1.5a.5.5 0 0 1-.948-.316l.5-1.5a.5.5 0 0 1 .632-.317m6 0a.5.5 0 0 1 .316.633l-.5 1.5a.5.5 0 0 1-.948-.316l.5-1.5a.5.5 0 0 1 .632-.317m-3.5 1.5a.5.5 0 0 1 .316.633l-.5 1.5a.5.5 0 0 1-.948-.316l.5-1.5a.5.5 0 0 1 .632-.317m6 0a.5.5 0 0 1 .316.633l-.5 1.5a.5.5 0 1 1-.948-.316l.5-1.5a.5.5 0 0 1 .632-.317m.747-8.498a5.001 5.001 0 0 0-9.499-1.004A3.5 3.5 0 1 0 3.5 11H13a3 3 0 0 0 .405-5.973M8.5 2a4 4 0 0 1 3.976 3.555.5.5 0 0 0 .5.445H13a2 2 0 0 1 0 4H3.5a2.5 2.5 0 1 1 .605-4.926.5.5 0 0 0 .596-.329A4 4 0 0 1 8.5 2"
                 ]
             },
             {
