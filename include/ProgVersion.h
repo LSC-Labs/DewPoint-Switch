@@ -7,9 +7,9 @@
 #define PROG_VERSION_NAME  "DewPoint-Switch"
 
 #define PROG_VERSION_MAJOR 1
-#define PROG_VERSION_MINOR 0
+#define PROG_VERSION_MINOR 2
 #define PROG_VERSION_PATCH 0
-#define PROG_VERSION_BUILD 0
-#define PROG_VERSION       "1.0.0"
-#define PROG_VERSION_SHORT "1.0"
-#define PROG_VERSION_LONG  "1.0.0.0"
+#define PROG_VERSION_BUILD 2
+#define PROG_VERSION       "1.2.0"
+#define PROG_VERSION_SHORT "1.2"
+#define PROG_VERSION_LONG  "1.2.0.2"
