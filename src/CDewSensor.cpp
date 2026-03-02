@@ -13,6 +13,7 @@
 #include <Network.h>
 #include <ESP8266HTTPClient.h>
 #include <Msgs.h>
+#include <JsonHelper.h>
 
 #define SENSOR_CFG_IS_SENSOR        F("physical")
 #define SENSOR_CFG_ADJUST_TEMP      F("adjust_temp")
@@ -64,12 +65,12 @@ void CDewSensor::begin(int nPin, int nSensorType, int nLocation) {
 void CDewSensor::readConfigFrom(JsonObject & oCfg) {
     DEBUG_FUNC_START();
     Serial.printf("### adjust temp read from json : %f << org value\n",Config.adjustTempC);
-    LSC::setValue(&Config.bIsPhysicalSensor,    oCfg[SENSOR_CFG_IS_SENSOR]);
-    LSC::setValue(&Config.adjustHumidity,       oCfg[SENSOR_CFG_ADJUST_HUMIDITY]);
-    LSC::setValue(&Config.adjustTempC,          oCfg[SENSOR_CFG_ADJUST_TEMP]);
-    LSC::setValue(Config.strWeatherAppID,       oCfg[SENSOR_CFG_OPENWEATHER_KEY]);
-    LSC::setValue(Config.strWeatherLongitude,   oCfg[SENSOR_CFG_OPENWEATHER_LON]);
-    LSC::setValue(Config.strWeatherLatitude,    oCfg[SENSOR_CFG_OPENWEATHER_LAT]);
+    LSC::setJsonValue(oCfg,SENSOR_CFG_IS_SENSOR,&Config.bIsPhysicalSensor);
+    LSC::setJsonValue(oCfg,SENSOR_CFG_ADJUST_HUMIDITY,&Config.adjustHumidity);
+    LSC::setJsonValue(oCfg,SENSOR_CFG_ADJUST_TEMP,&Config.adjustTempC);
+    LSC::setJsonValue(oCfg,SENSOR_CFG_OPENWEATHER_KEY,Config.strWeatherAppID);
+    LSC::setJsonValue(oCfg,SENSOR_CFG_OPENWEATHER_LON,Config.strWeatherLongitude);
+    LSC::setJsonValue(oCfg,SENSOR_CFG_OPENWEATHER_LAT,Config.strWeatherLatitude);
     DEBUG_INFOS(" ## -> Configured as %s sensor", Config.bIsPhysicalSensor ? "physical" : "open weather");
     m_oSensorReadDelay.start( Config.bIsPhysicalSensor      ? 
                             Config.nSensorReadTimeout   :

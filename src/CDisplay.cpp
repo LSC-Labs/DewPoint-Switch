@@ -80,11 +80,11 @@ int CDisplay::receiveEvent(const void * pSender, int nMsgType, const void * pMes
 } 
 
 void CDisplay::readConfigFrom(JsonObject & oCfg) {
-    LSC::setValue(&Config.AlwaysOn,          oCfg[CFG_ALWAYS_ON]);
-    LSC::setValue(Config.StaticDisplayName,  oCfg[CFG_STATIC_PAGE]);
-    LSC::setValue(&Config.RotateDisplays,    oCfg[CFG_ROTATE]);
-    LSC::setValue(&Config.RotateTime,        oCfg[CFG_ROTATE_TIME]);
-    LSC::setValue(&Config.PowerOffTime,      oCfg[CFG_POWER_OFF_TIME]);
+    LSC::setJsonValue(oCfg, CFG_ALWAYS_ON,       &Config.AlwaysOn);
+    LSC::setJsonValue(oCfg, CFG_STATIC_PAGE,      Config.StaticDisplayName);
+    LSC::setJsonValue(oCfg, CFG_ROTATE,          &Config.RotateDisplays);
+    LSC::setJsonValue(oCfg, CFG_ROTATE_TIME,     &Config.RotateTime);
+    LSC::setJsonValue(oCfg, CFG_POWER_OFF_TIME,  &Config.PowerOffTime);
 };
 
 void CDisplay::writeConfigTo(JsonObject & oCfg, bool bHideCritical) {

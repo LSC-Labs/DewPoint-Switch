@@ -130,8 +130,9 @@ void setup() {
   Appl.sayHello();
 
   bool bUseConfigData = !oBtn.isPressed();
+
   if(bUseConfigData) Appl.readConfigFrom(CONFIG_FILE);
-  
+
   Appl.printDiag();
   Appl.Log.logInfo(F("Initializing services..."));
  

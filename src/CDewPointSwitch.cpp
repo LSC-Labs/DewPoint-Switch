@@ -32,10 +32,14 @@ void CDewPointSwitch::writeConfigTo(JsonObject & oCfg, bool bHideCritical) {
 }
 
 void CDewPointSwitch::readConfigFrom(JsonObject & oCfg) {
-    LSC::setValue(&Config.activationHysteresis,     oCfg[DEW_CFG_HYSTERESIS]);
-    LSC::setValue(&Config.dewPointActivationDelta,  oCfg[DEW_CFG_DEWDELTA]);
-    LSC::setValue(&Config.minActivationLevelIndoor, oCfg[DEW_CFG_MIN_INTERN]);
-    LSC::setValue(&Config.minActivationLevelOutdoor, oCfg[DEW_CFG_MIN_EXTERN]);
+    DEBUG_FUNC_START();
+    DEBUG_JSON_OBJ(oCfg);
+
+    LSC::setJsonValue(oCfg, DEW_CFG_HYSTERESIS,  &Config.activationHysteresis);
+    LSC::setJsonValue(oCfg, DEW_CFG_DEWDELTA,    &Config.dewPointActivationDelta);
+    LSC::setJsonValue(oCfg, DEW_CFG_MIN_INTERN,  &Config.minActivationLevelIndoor);
+    LSC::setJsonValue(oCfg, DEW_CFG_MIN_EXTERN,  &Config.minActivationLevelOutdoor);
+    DEBUG_FUNC_END();
 }
 
 bool CDewPointSwitch::setNewDewpointState(float fIndoor,float fOutdoor) {
